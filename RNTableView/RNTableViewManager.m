@@ -10,6 +10,14 @@
 #import "RNTableView.h"
 #import "RCTBridge.h"
 #import "RCTConvert.h"
+#import "RCTUIManager.h"
+#import "RCTScrollableProtocol.h"
+
+@interface RNTableView (Private)
+
+- (NSArray<NSDictionary *> *)calculateChildFramesData;
+
+@end
 
 @implementation RNTableViewManager
 
@@ -61,20 +69,8 @@ RCT_CUSTOM_VIEW_PROPERTY(reactModuleForCell, NSString*, RNTableView) {
     [view setReactModuleForCell:[RCTConvert NSString:json]];
 }
 
-RCT_CUSTOM_VIEW_PROPERTY(contentInset, UIEdgeInsets, RNTableView) {
-    [view setContentInset:[RCTConvert UIEdgeInsets:json]];
-}
-
 RCT_CUSTOM_VIEW_PROPERTY(separatorStyle, UITableViewCellSeparatorStyle, RNTableView) {
     [view setSeparatorStyle:[RCTConvert NSInteger:json]];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(contentOffset, CGPoint, RNTableView) {
-    [view setContentOffset:[RCTConvert CGPoint:json]];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets, RNTableView) {
-    [view setScrollIndicatorInsets:[RCTConvert UIEdgeInsets:json]];
 }
 
 - (NSDictionary *)constantsToExport {
@@ -104,7 +100,11 @@ RCT_CUSTOM_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets, RNTableView) {
                      @"None": @(UITableViewCellSeparatorStyleNone),
                      @"Line": @(UITableViewCellSeparatorStyleSingleLine),
                      @"LineEtched": @(UITableViewCellSeparatorStyleSingleLineEtched)
-                     }
+                     },
+             @"DecelerationRate": @{
+                     @"normal": @(UIScrollViewDecelerationRateNormal),
+                     @"fast": @(UIScrollViewDecelerationRateFast),
+                     },
              };
 }
 
@@ -160,14 +160,151 @@ RCT_CUSTOM_VIEW_PROPERTY(footerFontFamily, NSString, RNTableView)
     view.footerFont = [RCTConvert UIFont:view.footerFont withFamily:json ?: defaultView.font.familyName];
 }
 
-//
-//- (NSDictionary *)constantsToExport
+
+#pragma mark -
+#pragma mark ScrollView Properties
+
+RCT_EXPORT_VIEW_PROPERTY(alwaysBounceHorizontal, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(alwaysBounceVertical, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bounces, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(bouncesZoom, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(canCancelContentTouches, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(centerContent, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(automaticallyAdjustContentInsets, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(decelerationRate, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(directionalLockEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(keyboardDismissMode, UIScrollViewKeyboardDismissMode)
+RCT_EXPORT_VIEW_PROPERTY(maximumZoomScale, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(minimumZoomScale, CGFloat)
+RCT_EXPORT_VIEW_PROPERTY(pagingEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(scrollsToTop, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(showsHorizontalScrollIndicator, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(stickyHeaderIndices, NSIndexSet)
+RCT_EXPORT_VIEW_PROPERTY(scrollEventThrottle, NSTimeInterval)
+RCT_EXPORT_VIEW_PROPERTY(zoomScale, CGFloat)
+
+RCT_CUSTOM_VIEW_PROPERTY(contentInset, UIEdgeInsets, RNTableView) {
+    [view setContentInset:[RCTConvert UIEdgeInsets:json]];
+}
+RCT_CUSTOM_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets, RNTableView) {
+    [view setScrollIndicatorInsets:[RCTConvert UIEdgeInsets:json]];
+}
+RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
+RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
+
+RCT_CUSTOM_VIEW_PROPERTY(contentOffset, CGPoint, RNTableView) {
+    [view setContentOffset:[RCTConvert CGPoint:json]];
+}
+RCT_EXPORT_VIEW_PROPERTY(onRefreshStart, RCTDirectEventBlock)
+
+//- (NSDictionary<NSString *, id> *)constantsToExport
 //{
-//    UIPickerView *view = [[UIPickerView alloc] init];
 //    return @{
-//             @"ComponentHeight": @(view.intrinsicContentSize.height),
-//             @"ComponentWidth": @(view.intrinsicContentSize.width)
+//             @"DecelerationRate": @{
+//                     @"normal": @(UIScrollViewDecelerationRateNormal),
+//                     @"fast": @(UIScrollViewDecelerationRateFast),
+//                     },
 //             };
 //}
+
+RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
+                  callback:(RCTResponseSenderBlock)callback)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RNTableView *> *viewRegistry) {
+         
+         RNTableView *view = viewRegistry[reactTag];
+         if (!view || ![view isKindOfClass:[RNTableView class]]) {
+             RCTLogError(@"Cannot find RNTableView with tag #%@", reactTag);
+             return;
+         }
+         
+         CGSize size = view.tableView.contentSize;
+         callback(@[@{
+                        @"width" : @(size.width),
+                        @"height" : @(size.height)
+                        }]);
+     }];
+}
+
+RCT_EXPORT_METHOD(calculateChildFrames:(nonnull NSNumber *)reactTag
+                  callback:(RCTResponseSenderBlock)callback)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RNTableView *> *viewRegistry) {
+         
+         RNTableView *view = viewRegistry[reactTag];
+         if (!view || ![view isKindOfClass:[RNTableView class]]) {
+             RCTLogError(@"Cannot find RNTableView with tag #%@", reactTag);
+             return;
+         }
+         
+         NSArray<NSDictionary *> *childFrames = [view calculateChildFramesData];
+         if (childFrames) {
+             callback(@[childFrames]);
+         }
+     }];
+}
+
+RCT_EXPORT_METHOD(endRefreshing:(nonnull NSNumber *)reactTag)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RNTableView *> *viewRegistry) {
+         
+         RNTableView *view = viewRegistry[reactTag];
+         if (!view || ![view isKindOfClass:[RNTableView class]]) {
+             RCTLogError(@"Cannot find RNTableView with tag #%@", reactTag);
+             return;
+         }
+         
+         [view endRefreshing];
+     }];
+}
+
+RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
+                  withOffset:(CGPoint)offset
+                  animated:(BOOL)animated)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry){
+         UIView *view = viewRegistry[reactTag];
+         if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
+             [(id<RCTScrollableProtocol>)view scrollToOffset:offset animated:animated];
+         } else {
+             RCTLogError(@"tried to scrollTo: on non-RCTScrollableProtocol view %@ "
+                         "with tag #%@", view, reactTag);
+         }
+     }];
+}
+
+RCT_EXPORT_METHOD(zoomToRect:(nonnull NSNumber *)reactTag
+                  withRect:(CGRect)rect
+                  animated:(BOOL)animated)
+{
+    [self.bridge.uiManager addUIBlock:
+     ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry){
+         UIView *view = viewRegistry[reactTag];
+         if ([view conformsToProtocol:@protocol(RCTScrollableProtocol)]) {
+             [(id<RCTScrollableProtocol>)view zoomToRect:rect animated:animated];
+         } else {
+             RCTLogError(@"tried to zoomToRect: on non-RCTScrollableProtocol view %@ "
+                         "with tag #%@", view, reactTag);
+         }
+     }];
+}
+
+- (NSArray<NSString *> *)customDirectEventTypes
+{
+    return @[
+             @"scrollBeginDrag",
+             @"scroll",
+             @"scrollEndDrag",
+             @"scrollAnimationEnd",
+             @"momentumScrollBegin",
+             @"momentumScrollEnd",
+             ];
+}
 
 @end

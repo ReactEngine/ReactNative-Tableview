@@ -1,6 +1,16 @@
 'use strict';
 var React = require('react-native');
-var {NativeMethodsMixin, ReactNativeViewAttributes, NativeModules, StyleSheet, View,requireNativeComponent} = React;
+
+var {
+  NativeMethodsMixin,
+  ReactNativeViewAttributes,
+  NativeModules,
+  StyleSheet,
+  View,
+  requireNativeComponent,
+  ScrollView
+} = React;
+
 var RNTableViewConsts = NativeModules.UIManager.RNTableView.Constants;
 
 var TABLEVIEW = 'tableview';
@@ -15,6 +25,8 @@ var TableView = React.createClass({
     mixins: [NativeMethodsMixin],
 
     propTypes: {
+        ...ScrollView.propTypes,
+
         onPress: React.PropTypes.func,
         selectedValue: React.PropTypes.any, // string or integer basically
         autoFocus: React.PropTypes.bool,
@@ -66,6 +78,10 @@ var TableView = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         var state = this._stateFromProps(nextProps);
         this.setState(state);
+    },
+
+    getScrollResponder: function() {
+      return this;
     },
 
     // Translate TableView prop and children into stuff that RNTableView understands.

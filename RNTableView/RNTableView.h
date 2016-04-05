@@ -7,6 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+
+#import "RCTAutoInsetsProtocol.h"
+#import "RCTEventDispatcher.h"
+#import "RCTScrollableProtocol.h"
+#import "RCTView.h"
+
 @class RCTEventDispatcher;
 
 @protocol RNTableViewDatasource <NSObject>
@@ -19,9 +25,16 @@
 
 @end
 
-@interface RNTableView : UIView
+@interface RNTableView : RCTView
+<UITableViewDataSource,
+UITableViewDelegate,
+RCTScrollableProtocol,
+RCTAutoInsetsProtocol
+>
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+
+@property (nonatomic, readonly) UITableView *tableView;
 
 @property (nonatomic, copy) NSMutableArray *sections;
 @property (nonatomic, copy) NSArray *additionalItems;
@@ -36,7 +49,7 @@
 @property (nonatomic) BOOL editing;
 @property (nonatomic) BOOL emptyInsets;
 @property (nonatomic) BOOL moveWithinSectionOnly;
-@property (nonatomic, assign) UIEdgeInsets contentInset;
+//@property (nonatomic, assign) UIEdgeInsets contentInset;
 @property (nonatomic, assign) CGPoint contentOffset;
 @property (nonatomic, assign) UIEdgeInsets scrollIndicatorInsets;
 
@@ -59,5 +72,43 @@
 @property (nonatomic) BOOL allowsToggle;
 @property (nonatomic) BOOL allowsMultipleSelection;
 @property (nonatomic) NSString *reactModuleForCell;
+
+#pragma mark - RCTScrollView properties & methods
+
+/**
+ *  @name RCTScrollView properties & methods
+ *
+ */
+
+/**
+ * The `RCTScrollView` may have at most one single subview. This will ensure
+ * that the scroll view's `contentSize` will be efficiently set to the size of
+ * the single subview's frame. That frame size will be determined somewhat
+ * efficiently since it will have already been computed by the off-main-thread
+ * layout system.
+ */
+//@property (nonatomic, readonly) UIView *contentView;
+
+/**
+ * If the `contentSize` is not specified (or is specified as {0, 0}, then the
+ * `contentSize` will automatically be determined by the size of the subview.
+ */
+//@property (nonatomic, assign) CGSize contentSize;
+
+/**
+ * The underlying scrollView (TODO: can we remove this?)
+ */
+//@property (nonatomic, readonly) UIScrollView *scrollView;
+
+@property (nonatomic, assign) UIEdgeInsets contentInset;
+@property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
+@property (nonatomic, assign) NSTimeInterval scrollEventThrottle;
+@property (nonatomic, assign) BOOL centerContent;
+@property (nonatomic, assign) int snapToInterval;
+@property (nonatomic, copy) NSString *snapToAlignment;
+@property (nonatomic, copy) NSIndexSet *stickyHeaderIndices;
+@property (nonatomic, copy) RCTDirectEventBlock onRefreshStart;
+
+- (void)endRefreshing;
 
 @end

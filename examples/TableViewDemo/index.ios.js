@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react-native');
-var { AppRegistry, Text, Dimensions, View, TouchableHighlight, TextInput } = React;
+var { AppRegistry, Text, Dimensions, View, TouchableHighlight, TextInput, RefreshControl } = React;
 var TableView = require('react-native-tableview');
 var Section = TableView.Section;
 var Item = TableView.Item;
@@ -29,7 +29,9 @@ class Example1 extends React.Component {
     }
     render() {
         return (
-            <TableView style={{flex:1}} onPress={(event) => alert(JSON.stringify(event))}>
+            <TableView style={{flex:1}}
+                       contentInset={{top:64,left:0,bottom:0,right:0}}
+                       onPress={(event) => alert(JSON.stringify(event))}>
                 <Section label={this.state.sectionLabel}>
                     <Cell style={{backgroundColor:'gray'}} value="">
                         <Text style={{color:'white', textAlign:'right'}}>Cell 1</Text>
@@ -62,7 +64,7 @@ class Example2 extends React.Component {
     render() {
         var country = "ES";
         return (
-            <TableView selectedValue="" style={{flex:1}} json="states" filter={`country=='${country}'`}
+            <TableView selectedValue="" style={{flex:1}} contentInset={{top:64,left:0,bottom:0,right:0}} json="states" filter={`country=='${country}'`}
                        tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
                        onPress={(event) => alert(JSON.stringify(event))}>
                 <Item value="">All states</Item>
@@ -75,6 +77,7 @@ class Example3 extends React.Component {
     render(){
         return (
             <TableView style={{flex:1}}
+                       contentInset={{top:64,left:0,bottom:0,right:0}}
                        allowsToggle={true}
                        allowsMultipleSelection={true}
                        tableViewStyle={TableView.Consts.Style.Grouped}
@@ -137,6 +140,7 @@ class ReusableCellExample2 extends React.Component {
         }
         return (
             <TableView reactModuleForCell="TableViewExampleCell" style={{flex:1}}
+                       contentInset={{top:64,left:0,bottom:0,right:0}}
                        allowsToggle={true}
                        allowsMultipleSelection={true}
                        tableViewStyle={TableView.Consts.Style.Grouped}
@@ -248,7 +252,7 @@ class CustomEditableExample extends React.Component {
     editOrSave() {
         if (this.state.editing) {
             //Save edited data
-            
+
             var self = this;
             var newData = (this.dataItemKeysBeingEdited || []).map(itemKey=>self.preEditData[itemKey]);
             this.dataItemKeysBeingEdited = null;
@@ -474,9 +478,26 @@ class Launch extends React.Component {
     componentDidMount(){
         setTimeout(()=>this.setState({sectionLabel: 'Section #1'}));
     }
+
+    _onScroll(e) {
+      // alert("OnScroll: "+JSON.stringify(e));
+    }
+
+    _onRefresh(e) {
+      alert("OnScroll: "+JSON.stringify(e));
+    }
+
+    _renderRefreshControl() {
+      return <RefreshControl onRefresh={this._onRefresh} />
+    }
+
     render(){
         return (
-            <TableView style={{flex:1}}>
+            <TableView style={{flex:1}}
+                       contentInset={{top:64,left:0,bottom:0,right:0}}
+                       onScroll={this._onScroll}
+                       refreshControl={this._renderRefreshControl()}>
+
                 <Section label={this.state.sectionLabel}  arrow={true}>
                     <Item onPress={Actions.example1}>Example with custom cells</Item>
                     <Item onPress={Actions.example2}>Example with app bundle JSON data</Item>
