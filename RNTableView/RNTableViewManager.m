@@ -29,10 +29,17 @@ RCT_EXPORT_MODULE()
 
 - (NSArray *)customDirectEventTypes
 {
-    return @[
+    return @[/* Scroll View Events */
+             @"scrollBeginDrag",
+             @"scroll",
+             @"scrollEndDrag",
+             @"scrollAnimationEnd",
+             @"momentumScrollBegin",
+             @"momentumScrollEnd",
+             /* Table View Events */
              @"onWillDisplayCell",
              @"onEndDisplayingCell",
-             @"onItemNotification"
+             @"onItemNotification",
              ];
 }
 
@@ -306,18 +313,6 @@ RCT_EXPORT_METHOD(zoomToRect:(nonnull NSNumber *)reactTag
                          "with tag #%@", view, reactTag);
          }
      }];
-}
-
-- (NSArray<NSString *> *)customDirectEventTypes
-{
-    return @[
-             @"scrollBeginDrag",
-             @"scroll",
-             @"scrollEndDrag",
-             @"scrollAnimationEnd",
-             @"momentumScrollBegin",
-             @"momentumScrollEnd",
-             ];
 }
 
 @end

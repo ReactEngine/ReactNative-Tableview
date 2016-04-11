@@ -43,13 +43,13 @@
 
 @implementation RNCustomTableView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    if ((self = [super initWithFrame:frame])) {
-        [self.panGestureRecognizer addTarget:self action:@selector(handleCustomPan:)];
-    }
-    return self;
-}
+//- (instancetype)initWithFrame:(CGRect)frame
+//{
+//    if ((self = [super initWithFrame:frame])) {
+//        [self.panGestureRecognizer addTarget:self action:@selector(handleCustomPan:)];
+//    }
+//    return self;
+//}
 
 //- (UIView *)contentView
 //{
@@ -72,25 +72,24 @@
     return NO;
 }
 
-- (void)handleCustomPan:(__unused UIPanGestureRecognizer *)sender
-{
-    if ([self _shouldDisableScrollInteraction] && ![[RCTUIManager JSResponder] isKindOfClass:[RNTableView class]]) {
-        self.panGestureRecognizer.enabled = NO;
-        self.panGestureRecognizer.enabled = YES;
-        // TODO: If mid bounce, animate the scroll view to a non-bounced position
-        // while disabling (but only if `stopScrollInteractionIfJSHasResponder` was
-        // called *during* a `pan`. Currently, it will just snap into place which
-        // is not so bad either.
-        // Another approach:
-        // self.scrollEnabled = NO;
-        // self.scrollEnabled = YES;
-    }
-}
+//- (void)handleCustomPan:(__unused UIPanGestureRecognizer *)sender
+//{
+//    if ([self _shouldDisableScrollInteraction] && ![[RCTUIManager JSResponder] isKindOfClass:[RNTableView class]]) {
+//        self.panGestureRecognizer.enabled = NO;
+//        self.panGestureRecognizer.enabled = YES;
+//        // TODO: If mid bounce, animate the scroll view to a non-bounced position
+//        // while disabling (but only if `stopScrollInteractionIfJSHasResponder` was
+//        // called *during* a `pan`. Currently, it will just snap into place which
+//        // is not so bad either.
+//        // Another approach:
+//        // self.scrollEnabled = NO;
+//        // self.scrollEnabled = YES;
+//    }
+//}
 
-- (void)scrollRectToVisible:(__unused CGRect)rect animated:(__unused BOOL)animated
-{
-    // noop
-}
+//- (void)scrollRectToVisible:(__unused CGRect)rect animated:(__unused BOOL)animated {
+//    // noop
+//}
 
 /**
  * Returning `YES` cancels touches for the "inner" `view` and causes a scroll.
@@ -140,6 +139,7 @@
     return ![self _shouldDisableScrollInteraction];
 }
 
+- (void)useless {
 /*
  * Automatically centers the content such that if the content is smaller than the
  * ScrollView, we force it to be centered, but when you zoom or the content otherwise
@@ -162,8 +162,8 @@
 //    super.contentOffset = contentOffset;
 //}
 
-- (void)dockClosestSectionHeader
-{
+//- (void)dockClosestSectionHeader
+//{
 //    UIView *contentView = [self contentView];
 //    CGFloat scrollTop = self.bounds.origin.y + self.contentInset.top;
 //    
@@ -229,22 +229,23 @@
 //        previousHeader.transform = CGAffineTransformMakeTranslation(0, yOffset);
 //        previousHeader.layer.zPosition = ZINDEX_STICKY_HEADER;
 //    }
-}
+//}
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    __block UIView *hitView;
-    
+//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+//{
+//    __block UIView *hitView;
+//    
 //    [_stickyHeaderIndices enumerateIndexesWithOptions:0 usingBlock:^(NSUInteger idx, BOOL *stop) {
 //        UIView *stickyHeader = [self contentView].reactSubviews[idx];
 //        CGPoint convertedPoint = [stickyHeader convertPoint:point fromView:self];
 //        hitView = [stickyHeader hitTest:convertedPoint withEvent:event];
 //        *stop = (hitView != nil);
 //    }];
-    
-    return hitView ?: [super hitTest:point withEvent:event];
+//    
+//    return hitView ?: [super hitTest:point withEvent:event];
+//}
 }
-
+    
 - (void)setRefreshControl:(UIRefreshControl *)refreshControl
 {
     if (_refreshControl) {
@@ -283,7 +284,7 @@
 }
 
 @synthesize nativeScrollDelegate = _nativeScrollDelegate;
-
+@synthesize contentSize = _contentSize;
 
 -(void)setEditing:(BOOL)editing {
     [self.tableView setEditing:editing animated:YES];
@@ -940,7 +941,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [_tableView dockClosestSectionHeader];
+//    [_tableView dockClosestSectionHeader];
     [self updateClippedSubviews];
     
     NSTimeInterval now = CACurrentMediaTime();
@@ -1185,7 +1186,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
         _tableView.contentSize = contentSize;
         _tableView.contentOffset = newOffset;
     }
-    [_tableView dockClosestSectionHeader];
+//    [_tableView dockClosestSectionHeader];
 }
 
 // Note: setting several properties of UIScrollView has the effect of
