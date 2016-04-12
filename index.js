@@ -6,10 +6,13 @@ var {
   ReactNativeViewAttributes,
   NativeModules,
   StyleSheet,
+  Platform,
   View,
   requireNativeComponent,
-  ScrollView
+  ScrollView,
 } = React;
+
+var invariant = require('invariant');
 
 import TableViewScrollResponder from './TableViewScrollResponder.js'
 
@@ -143,29 +146,168 @@ var TableView = React.createClass({
     },
 
     render: function() {
-        return (
-            // <View style={[{flex:1},this.props.style]}>
-                <RNTableView
-                    ref={TABLEVIEW}
-                    style={[{flex:1},this.props.style]}
-                    sections={this.state.sections}
-                    additionalItems={this.state.additionalItems}
-                    tableViewStyle={TableView.Consts.Style.Plain}
-                    tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-                    tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                    separatorStyle={TableView.Consts.SeparatorStyle.Line}
-                    scrollIndicatorInsets={this.props.contentInset}
-                    {...this.props}
-                    json={this.state.json}
-                    onPress={this._onPress}
-                    onChange={this._onChange}
-                    onWillDisplayCell={this._onWillDisplayCell}
-                    onEndDisplayingCell={this._onEndDisplayingCell}>
 
-                    {this.state.children}
-                </RNTableView>
-            // </View>
-        );
+      // if (__DEV__ && this.props.style) {
+      //   var style = flattenStyle(this.props.style);
+      //   var childLayoutProps = ['alignItems', 'justifyContent']
+      //     .filter((prop) => style && style[prop] !== undefined);
+      //   invariant(
+      //     childLayoutProps.length === 0,
+      //     'ScrollView child layout (' + JSON.stringify(childLayoutProps) +
+      //       ') must by applied through the contentContainerStyle prop.'
+      //   );
+      // }
+
+      var contentSizeChangeProps = {};
+      if (this.props.onContentSizeChange) {
+        contentSizeChangeProps = {
+          onLayout: this._handleContentOnLayout,
+        };
+      }
+
+      var alwaysBounceHorizontal =
+        this.props.alwaysBounceHorizontal !== undefined ?
+          this.props.alwaysBounceHorizontal :
+          this.props.horizontal;
+
+      var alwaysBounceVertical =
+        this.props.alwaysBounceVertical !== undefined ?
+          this.props.alwaysBounceVertical :
+          !this.props.horizontal;
+
+      var props = {
+        ...this.props,
+        alwaysBounceHorizontal,
+        alwaysBounceVertical,
+        style: ([styles.base, this.props.style]: ?Array<any>),
+        onTouchStart: this.scrollResponderHandleTouchStart,
+        onTouchMove: this.scrollResponderHandleTouchMove,
+        onTouchEnd: this.scrollResponderHandleTouchEnd,
+        onScrollBeginDrag: this.scrollResponderHandleScrollBeginDrag,
+        onScrollEndDrag: this.scrollResponderHandleScrollEndDrag,
+        onMomentumScrollBegin: this.scrollResponderHandleMomentumScrollBegin,
+        onMomentumScrollEnd: this.scrollResponderHandleMomentumScrollEnd,
+        onStartShouldSetResponder: this.scrollResponderHandleStartShouldSetResponder,
+        onStartShouldSetResponderCapture: this.scrollResponderHandleStartShouldSetResponderCapture,
+        onScrollShouldSetResponder: this.scrollResponderHandleScrollShouldSetResponder,
+        onScroll: this.handleScroll,
+        onResponderGrant: this.scrollResponderHandleResponderGrant,
+        onResponderTerminationRequest: this.scrollResponderHandleTerminationRequest,
+        onResponderTerminate: this.scrollResponderHandleTerminate,
+        onResponderRelease: this.scrollResponderHandleResponderRelease,
+        onResponderReject: this.scrollResponderHandleResponderReject,
+        sendMomentumEvents: (this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd) ? true : false,
+      };
+
+      var onRefreshStart = this.props.onRefreshStart;
+      if (onRefreshStart) {
+        // this is necessary because if we set it on props, even when empty,
+        // it'll trigger the default pull-to-refresh behavior on native.
+        props.onRefreshStart =
+          function() { onRefreshStart && onRefreshStart(this.endRefreshing); }.bind(this);
+      }
+
+      var { decelerationRate } = this.props;
+      if (decelerationRate) {
+        props.decelerationRate = processDecelerationRate(decelerationRate);
+      }
+
+      var ScrollViewClass;
+      if (Platform.OS === 'ios') {
+        ScrollViewClass = RNTableView;
+      } else if (Platform.OS === 'android') {
+        if (this.props.horizontal) {
+          ScrollViewClass = undefined;
+        } else {
+          ScrollViewClass = undefined;
+        }
+      }
+      invariant(
+        ScrollViewClass !== undefined,
+        'ScrollViewClass must not be undefined'
+      );
+
+      var refreshControl = this.props.refreshControl;
+      if (refreshControl) {
+        if (Platform.OS === 'ios') {
+          // On iOS the RefreshControl is a child of the ScrollView.
+          return (
+            <ScrollViewClass  {...props}
+                              ref={TABLEVIEW}
+                              sections={this.state.sections}
+                              additionalItems={this.state.additionalItems}
+                              tableViewStyle={TableView.Consts.Style.Plain}
+                              tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                              tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
+                              separatorStyle={TableView.Consts.SeparatorStyle.Line}
+                              scrollIndicatorInsets={this.props.contentInset}
+                              json={this.state.json}
+                              onPress={this._onPress}
+                              onChange={this._onChange}
+                              onWillDisplayCell={this._onWillDisplayCell}
+                              onEndDisplayingCell={this._onEndDisplayingCell}>
+
+              <Header>{refreshControl}</Header>
+              {this.state.children}
+            </ScrollViewClass>
+          );
+        } else if (Platform.OS === 'android') {
+          // On Android wrap the ScrollView with a AndroidSwipeRefreshLayout.
+          // Since the ScrollView is wrapped add the style props to the
+          // AndroidSwipeRefreshLayout and use flex: 1 for the ScrollView.
+          // return React.cloneElement(
+          //   refreshControl,
+          //   {style: props.style},
+          //   <ScrollViewClass {...props} style={styles.base} ref={SCROLLVIEW}>
+          //     {contentContainer}
+          //   </ScrollViewClass>
+          // );
+          return null;
+        }
+      }
+
+      return (
+        <ScrollViewClass  {...props}
+                          ref={TABLEVIEW}
+                          sections={this.state.sections}
+                          additionalItems={this.state.additionalItems}
+                          tableViewStyle={TableView.Consts.Style.Plain}
+                          tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                          tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
+                          separatorStyle={TableView.Consts.SeparatorStyle.Line}
+                          scrollIndicatorInsets={this.props.contentInset}
+                          json={this.state.json}
+                          onPress={this._onPress}
+                          onChange={this._onChange}
+                          onWillDisplayCell={this._onWillDisplayCell}
+                          onEndDisplayingCell={this._onEndDisplayingCell}>
+
+          {this.state.children}
+        </ScrollViewClass>
+      );
+        // return (
+        //     // <View style={[{flex:1},this.props.style]}>
+        //         <RNTableView
+        //             ref={TABLEVIEW}
+        //             style={[{flex:1},this.props.style]}
+        //             sections={this.state.sections}
+        //             additionalItems={this.state.additionalItems}
+        //             tableViewStyle={TableView.Consts.Style.Plain}
+        //             tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+        //             tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
+        //             separatorStyle={TableView.Consts.SeparatorStyle.Line}
+        //             scrollIndicatorInsets={this.props.contentInset}
+        //             {...this.props}
+        //             json={this.state.json}
+        //             onPress={this._onPress}
+        //             onChange={this._onChange}
+        //             onWillDisplayCell={this._onWillDisplayCell}
+        //             onEndDisplayingCell={this._onEndDisplayingCell}>
+        //
+        //             {this.state.children}
+        //         </RNTableView>
+        //     // </View>
+        // );
     },
 
     _onPress: function(event) {
@@ -212,7 +354,7 @@ var TableView = React.createClass({
     },
 
     setNativeProps: function(props: Object) {
-      this.refs[SCROLLVIEW].setNativeProps(props);
+      this.refs[TABLEVIEW].setNativeProps(props);
     },
 
     endRefreshing: function() {
@@ -232,7 +374,7 @@ var TableView = React.createClass({
     },
 
     getScrollableNode: function(): any {
-      return React.findNodeHandle(this.refs[SCROLLVIEW]);
+      return React.findNodeHandle(this.refs[TABLEVIEW]);
     },
 
     getInnerViewNode: function(): any {
@@ -346,7 +488,6 @@ TableView.Section = React.createClass({
         arrow: React.PropTypes.bool,
         footerHeight: React.PropTypes.number,
         headerHeight: React.PropTypes.number,
-
     },
 
     render: function() {

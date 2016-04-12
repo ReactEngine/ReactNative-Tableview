@@ -9,7 +9,7 @@
     "firebase": "^2.4.0",
     "react-native": "^0.19.0",
     "react-native-navbar": "^1.2.0",
-    "react-native-router-flux": "^2.1.8",
+    "react-native-router-flux": "^2.3.1",
     "react-native-tableview": "file:../../",
     "react-native-tabs": "^0.1.10"
   }

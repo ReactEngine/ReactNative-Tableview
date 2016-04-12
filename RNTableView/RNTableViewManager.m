@@ -284,9 +284,11 @@ RCT_EXPORT_METHOD(endRefreshing:(nonnull NSNumber *)reactTag)
 }
 
 RCT_EXPORT_METHOD(scrollTo:(nonnull NSNumber *)reactTag
-                  withOffset:(CGPoint)offset
+                  x:(CGFloat)x
+                  y:(CGFloat)y
                   animated:(BOOL)animated)
 {
+    CGPoint offset = CGPointMake(x, y);
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry){
          UIView *view = viewRegistry[reactTag];

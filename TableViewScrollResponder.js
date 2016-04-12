@@ -13,24 +13,21 @@
 
 var ReactNative = require('react-native');
 var React = require('react');
+var invariant = require('invariant');
+// var warning = require('warning');
 
 var {
   Dimensions,
   Platform,
-  RCTDeviceEventEmitter,
-  TextInputState,
+  DeviceEventEmitter,
   UIManager,
   NativeModules,
-  NativeMethodsMixin,
-  invariant,
-  warning
 } = ReactNative;
 
 var {
   RNTableViewManager,
   ReactComponent
 } = NativeModules;
-
 
 
 // var Dimensions = require('Dimensions');
@@ -140,7 +137,7 @@ type State = {
 type Event = Object;
 
 var TableViewScrollResponderMixin = {
-  mixins: [NativeMethodsMixin],
+
   scrollResponderMixinGetInitialState: function(): State {
     return {
       isTouching: false,
@@ -206,12 +203,12 @@ var TableViewScrollResponderMixin = {
    */
   scrollResponderHandleStartShouldSetResponderCapture: function(e: Event): boolean {
     // First see if we want to eat taps while the keyboard is up
-    var currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
-    if (!this.props.keyboardShouldPersistTaps &&
-      currentlyFocusedTextInput != null &&
-      e.target !== currentlyFocusedTextInput) {
-      return true;
-    }
+    // var currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
+    // if (!this.props.keyboardShouldPersistTaps &&
+    //   currentlyFocusedTextInput != null &&
+    //   e.target !== currentlyFocusedTextInput) {
+    //   return true;
+    // }
     return this.scrollResponderIsAnimating();
   },
 
@@ -267,16 +264,16 @@ var TableViewScrollResponderMixin = {
 
     // By default scroll views will unfocus a textField
     // if another touch occurs outside of it
-    var currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
-    if (!this.props.keyboardShouldPersistTaps &&
-      currentlyFocusedTextInput != null &&
-      e.target !== currentlyFocusedTextInput  &&
-      !this.state.observedScrollSinceBecomingResponder &&
-      !this.state.becameResponderWhileAnimating) {
-      this.props.onScrollResponderKeyboardDismissed &&
-        this.props.onScrollResponderKeyboardDismissed(e);
-      TextInputState.blurTextInput(currentlyFocusedTextInput);
-    }
+    // var currentlyFocusedTextInput = TextInputState.currentlyFocusedField();
+    // if (!this.props.keyboardShouldPersistTaps &&
+    //   currentlyFocusedTextInput != null &&
+    //   e.target !== currentlyFocusedTextInput  &&
+    //   !this.state.observedScrollSinceBecomingResponder &&
+    //   !this.state.becameResponderWhileAnimating) {
+    //   this.props.onScrollResponderKeyboardDismissed &&
+    //     this.props.onScrollResponderKeyboardDismissed(e);
+    //   TextInputState.blurTextInput(currentlyFocusedTextInput);
+    // }
   },
 
   scrollResponderHandleScroll: function(e: Event) {
@@ -504,10 +501,10 @@ var TableViewScrollResponderMixin = {
   componentWillMount: function() {
     this.keyboardWillOpenTo = null;
     this.additionalScrollOffset = 0;
-    this.addListenerOn(RCTDeviceEventEmitter, 'keyboardWillShow', this.scrollResponderKeyboardWillShow);
-    this.addListenerOn(RCTDeviceEventEmitter, 'keyboardWillHide', this.scrollResponderKeyboardWillHide);
-    this.addListenerOn(RCTDeviceEventEmitter, 'keyboardDidShow', this.scrollResponderKeyboardDidShow);
-    this.addListenerOn(RCTDeviceEventEmitter, 'keyboardDidHide', this.scrollResponderKeyboardDidHide);
+    this.addListenerOn(DeviceEventEmitter, 'keyboardWillShow', this.scrollResponderKeyboardWillShow);
+    this.addListenerOn(DeviceEventEmitter, 'keyboardWillHide', this.scrollResponderKeyboardWillHide);
+    this.addListenerOn(DeviceEventEmitter, 'keyboardDidShow', this.scrollResponderKeyboardDidShow);
+    this.addListenerOn(DeviceEventEmitter, 'keyboardDidHide', this.scrollResponderKeyboardDidHide);
   },
 
   /**
@@ -560,8 +557,43 @@ var TableViewScrollResponderMixin = {
   scrollResponderKeyboardDidHide: function(e: Event) {
     this.keyboardWillOpenTo = null;
     this.props.onKeyboardDidHide && this.props.onKeyboardDidHide(e);
-  }
+  },
 
+  // Subscribable Mixin
+  componentWillMount: function() {
+    this._subscribableSubscriptions = [];
+  },
+
+  // componentWillUnmount: function() {
+  //   this._subscribableSubscriptions.forEach(
+  //     (subscription) => subscription.remove()
+  //   );
+  //   this._subscribableSubscriptions = null;
+  // },
+
+  /**
+   * Special form of calling `addListener` that *guarantees* that a
+   * subscription *must* be tied to a component instance, and therefore will
+   * be cleaned up when the component is unmounted. It is impossible to create
+   * the subscription and pass it in - this method must be the one to create
+   * the subscription and therefore can guarantee it is retained in a way that
+   * will be cleaned up.
+   *
+   * @param {NativeAppEventEmitter} eventEmitter emitter to subscribe to.
+   * @param {string} eventType Type of event to listen to.
+   * @param {function} listener Function to invoke when event occurs.
+   * @param {object} context Object to use as listener context.
+   */
+  addListenerOn: function(
+    eventEmitter: DeviceEventEmitter,
+    eventType: string,
+    listener: Function,
+    context: Object
+  ) {
+    this._subscribableSubscriptions.push(
+      eventEmitter.addListener(eventType, listener, context)
+    );
+  }
 };
 
 var TableViewScrollResponder = {

@@ -6,6 +6,8 @@ var TableView = require('react-native-tableview');
 var Section = TableView.Section;
 var Item = TableView.Item;
 var Cell = TableView.Cell;
+var Header = TableView.Header;
+var Footer = TableView.Footer;
 var {Actions, Router, Route, Schema, Animations} = require('react-native-router-flux');
 var NavigationBar = require('react-native-navbar');
 var Firebase = require('firebase');
@@ -472,7 +474,7 @@ class LargeTableExample extends React.Component {
 class Launch extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {sectionLabel: 'Section'};
+        this.state = {sectionLabel: 'Section', width: 200, height: 20};
     }
 
     componentDidMount(){
@@ -481,23 +483,28 @@ class Launch extends React.Component {
 
     _onScroll(e) {
       // alert("OnScroll: "+JSON.stringify(e));
+      console.log("OnScroll: "+JSON.stringify(e));
     }
 
     _onRefresh(e) {
-      alert("OnScroll: "+JSON.stringify(e));
+      alert("OnRefresh: "+JSON.stringify(e));
     }
 
     _renderRefreshControl() {
-      return <RefreshControl onRefresh={this._onRefresh} />
+      return (
+        <RefreshControl onRefresh={this._onRefresh} />
+      );
     }
 
     render(){
         return (
             <TableView style={{flex:1}}
-                       contentInset={{top:64,left:0,bottom:0,right:0}}
+                       contentInset={{top:64-30,left:0,bottom:0,right:0}}
                        onScroll={this._onScroll}
+                       scrollEventThrottle={0.05}
                        refreshControl={this._renderRefreshControl()}>
 
+                <Header style={{width:320, height:30}} />
                 <Section label={this.state.sectionLabel}  arrow={true}>
                     <Item onPress={Actions.example1}>Example with custom cells</Item>
                     <Item onPress={Actions.example2}>Example with app bundle JSON data</Item>
@@ -510,6 +517,7 @@ class Launch extends React.Component {
                     <Item onPress={Actions.example8}>Reusable Large TableView Example</Item>
                     <Item onPress={Actions.example9}>Custom Editing Example</Item>
                 </Section>
+                <Footer />
             </TableView>
         );
     }
