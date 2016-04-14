@@ -439,47 +439,38 @@ var TableView = React.createClass({
     },
 });
 
-TableView.Item = React.createClass({
-    propTypes: {
-        value: React.PropTypes.any, // string or integer basically
-        label: React.PropTypes.string,
-    },
 
-    render: function() {
-        // These items don't get rendered directly.
-        return null;
-    },
-});
-
-TableView.Footer = React.createClass({
-    getInitialState(){
-        return {width:0, height:0}
-    },
-    render: function() {
-        return <RNFooterView onLayout={(event)=>{this.setState(event.nativeEvent.layout)}} {...this.props} componentWidth={this.state.width} componentHeight={this.state.height}/>
-    },
-});
-var RNFooterView = requireNativeComponent('RNTableFooterView', null);
 
 TableView.Header = React.createClass({
     getInitialState(){
         return {width:0, height:0}
     },
     render: function() {
-        return <RNHeaderView onLayout={(event)=>{this.setState(event.nativeEvent.layout)}} {...this.props} componentWidth={this.state.width} componentHeight={this.state.height}/>
+        return <RNHeaderView onLayout={(event)=>{
+                                        this.setState(event.nativeEvent.layout)
+                                      }}
+                             {...this.props}
+                             componentWidth={this.state.width}
+                             componentHeight={this.state.height}
+               />
     },
 });
 var RNHeaderView = requireNativeComponent('RNTableHeaderView', null);
 
-TableView.Cell = React.createClass({
+TableView.Footer = React.createClass({
     getInitialState(){
         return {width:0, height:0}
     },
     render: function() {
-        return <RNCellView onLayout={(event)=>{this.setState(event.nativeEvent.layout)}} {...this.props} componentWidth={this.state.width} componentHeight={this.state.height}/>
+        return <RNFooterView onLayout={(event)=>{
+                                        this.setState(event.nativeEvent.layout)
+                                      }}
+                             {...this.props}
+                             componentWidth={this.state.width}
+                             componentHeight={this.state.height}/>
     },
 });
-var RNCellView = requireNativeComponent('RNCellView', null);
+var RNFooterView = requireNativeComponent('RNTableFooterView', null);
 
 TableView.Section = React.createClass({
     propTypes: {
@@ -496,6 +487,36 @@ TableView.Section = React.createClass({
     },
 });
 
+TableView.Item = React.createClass({
+    propTypes: {
+        value: React.PropTypes.any, // string or integer basically
+        label: React.PropTypes.string,
+    },
+
+    render: function() {
+        // These items don't get rendered directly.
+        return null;
+    },
+});
+
+// custom cell
+TableView.Cell = React.createClass({
+    getInitialState(){
+        return {width:0, height:0}
+    },
+    render: function() {
+        return <RNCellView onLayout={(event) => {
+                                      this.setState(event.nativeEvent.layout)
+                                     }}
+                           {...this.props}
+                           componentWidth={this.state.width}
+                           componentHeight={this.state.height}
+               />
+    },
+});
+var RNCellView = requireNativeComponent('RNCellView', null);
+
+
 var styles = StyleSheet.create({
     tableView: {
         // The picker will conform to whatever width is given, but we do
@@ -504,8 +525,9 @@ var styles = StyleSheet.create({
         //height: RNTableViewConsts.ComponentHeight,
     },
 });
+
 TableView.Consts = RNTableViewConsts;
 
-var RNTableView = requireNativeComponent('RNTableView', null);
+var RNTableView = requireNativeComponent('RNTableView', TableView);
 
 module.exports = TableView;
