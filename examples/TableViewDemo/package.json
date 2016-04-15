@@ -11,7 +11,7 @@
     "react-native": "^0.23.1",
     "react-native-navbar": "^1.4.2",
     "react-native-router-flux": "^2.3.13",
-    "react-native-tableview": "file:../../",
+    "react-native-tableview": "file:///Users/jsun/Projects/react/react-native-tableview",
     "react-native-tabs": "^1.0.5"
   }
 }

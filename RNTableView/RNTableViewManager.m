@@ -27,6 +27,9 @@ RCT_EXPORT_MODULE()
     return [[RNTableView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 }
 
+#pragma mark -
+#pragma mark TableView Event Types
+
 - (NSArray *)customDirectEventTypes
 {
     return @[/* Scroll View Events */
@@ -43,51 +46,126 @@ RCT_EXPORT_MODULE()
              ];
 }
 
+#pragma mark -
+#pragma mark Data Source
+
 RCT_EXPORT_VIEW_PROPERTY(sections, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(json, NSString)
-RCT_EXPORT_VIEW_PROPERTY(editing, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(autoFocus, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(emptyInsets, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(filter, NSString)
-RCT_EXPORT_VIEW_PROPERTY(selectedValue, id)
-RCT_EXPORT_VIEW_PROPERTY(filterArgs, NSArray)
-RCT_EXPORT_VIEW_PROPERTY(additionalItems, NSArray)
-RCT_EXPORT_VIEW_PROPERTY(selectedIndex, NSInteger)
-RCT_EXPORT_VIEW_PROPERTY(selectedSection, NSInteger)
-RCT_EXPORT_VIEW_PROPERTY(cellHeight, float)
-RCT_EXPORT_VIEW_PROPERTY(footerHeight, float)
-RCT_EXPORT_VIEW_PROPERTY(headerHeight, float)
-RCT_EXPORT_VIEW_PROPERTY(textColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(tintColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(selectedTextColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(detailTextColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(separatorColor, UIColor)
-RCT_EXPORT_VIEW_PROPERTY(moveWithinSectionOnly, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(allowsToggle, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(allowsMultipleSelection, BOOL)
 
+RCT_EXPORT_VIEW_PROPERTY(filter, NSString)
+RCT_EXPORT_VIEW_PROPERTY(filterArgs, NSArray)
+
+RCT_EXPORT_VIEW_PROPERTY(additionalItems, NSArray)
+
+#pragma mark -
+#pragma mark Table View Properties
 
 RCT_CUSTOM_VIEW_PROPERTY(tableViewStyle, UITableViewStyle, RNTableView) {
     [view setTableViewStyle:[RCTConvert NSInteger:json]];
 }
-RCT_EXPORT_VIEW_PROPERTY(cellForRowAtIndexPath, NSArray)
+
+RCT_EXPORT_VIEW_PROPERTY(autoFocus, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(emptyInsets, BOOL)
+
+RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RNTableView) {
+    view.font = [RCTConvert UIFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, RNTableView) {
+    view.font = [RCTConvert UIFont:view.font withWeight:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, RNTableView) {
+    view.font = [RCTConvert UIFont:view.font withStyle:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RNTableView) {
+    view.font = [RCTConvert UIFont:view.font withFamily:json ?: defaultView.font.familyName];
+}
+
+#pragma mark -
+#pragma mark Header
+
+RCT_EXPORT_VIEW_PROPERTY(headerHeight, float)
+
+RCT_CUSTOM_VIEW_PROPERTY(headerFontSize, CGFloat, RNTableView) {
+    view.headerFont = [RCTConvert UIFont:view.headerFont withSize:json ?: @(defaultView.font.pointSize)];
+}
+RCT_CUSTOM_VIEW_PROPERTY(headerFontWeight, NSString, RNTableView) {
+    view.headerFont = [RCTConvert UIFont:view.headerFont withWeight:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(headerFontStyle, NSString, RNTableView) {
+    view.headerFont = [RCTConvert UIFont:view.headerFont withStyle:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(headerFontFamily, NSString, RNTableView) {
+    view.headerFont = [RCTConvert UIFont:view.headerFont withFamily:json ?: defaultView.font.familyName];
+}
+
+#pragma mark -
+#pragma mark Footer
+
+RCT_EXPORT_VIEW_PROPERTY(footerHeight, float)
+
+RCT_CUSTOM_VIEW_PROPERTY(footerFontSize, CGFloat, RNTableView) {
+    view.footerFont = [RCTConvert UIFont:view.footerFont withSize:json ?: @(defaultView.font.pointSize)];
+}
+RCT_CUSTOM_VIEW_PROPERTY(footerFontWeight, NSString, RNTableView) {
+    view.footerFont = [RCTConvert UIFont:view.footerFont withWeight:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(footerFontStyle, NSString, RNTableView) {
+    view.footerFont = [RCTConvert UIFont:view.footerFont withStyle:json]; // defaults to normal
+}
+RCT_CUSTOM_VIEW_PROPERTY(footerFontFamily, NSString, RNTableView) {
+    view.footerFont = [RCTConvert UIFont:view.footerFont withFamily:json ?: defaultView.font.familyName];
+}
+
+
+#pragma mark -
+#pragma mark Cell
 
 RCT_CUSTOM_VIEW_PROPERTY(tableViewCellStyle, UITableViewStyle, RNTableView) {
     [view setTableViewCellStyle:[RCTConvert NSInteger:json]];
 }
-
-RCT_CUSTOM_VIEW_PROPERTY(tableViewCellEditingStyle, UITableViewCellEditingStyle, RNTableView) {
-    [view setTableViewCellEditingStyle:[RCTConvert NSInteger:json]];
-}
-
 /*Each cell is a separate app, multiple cells share the app/module name*/
 RCT_CUSTOM_VIEW_PROPERTY(reactModuleForCell, NSString*, RNTableView) {
     [view setReactModuleForCell:[RCTConvert NSString:json]];
 }
 
+RCT_EXPORT_VIEW_PROPERTY(cellForRowAtIndexPath, NSArray)
+
+RCT_EXPORT_VIEW_PROPERTY(cellHeight, float)
+
+RCT_EXPORT_VIEW_PROPERTY(textColor, UIColor)
+RCT_EXPORT_VIEW_PROPERTY(detailTextColor, UIColor)
+RCT_EXPORT_VIEW_PROPERTY(tintColor, UIColor)
+
+RCT_EXPORT_VIEW_PROPERTY(allowsToggle, BOOL)
+
+RCT_EXPORT_VIEW_PROPERTY(allowsMultipleSelection, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(selectedIndex, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(selectedSection, NSInteger)
+RCT_EXPORT_VIEW_PROPERTY(selectedValue, id)
+RCT_EXPORT_VIEW_PROPERTY(selectedTextColor, UIColor)
+
+RCT_EXPORT_VIEW_PROPERTY(moveWithinSectionOnly, BOOL)
+
+#pragma mark -
+#pragma mark Editing
+
+RCT_EXPORT_VIEW_PROPERTY(editing, BOOL)
+
+RCT_CUSTOM_VIEW_PROPERTY(tableViewCellEditingStyle, UITableViewCellEditingStyle, RNTableView) {
+    [view setTableViewCellEditingStyle:[RCTConvert NSInteger:json]];
+}
+
+#pragma mark -
+#pragma mark Separator
+
+RCT_EXPORT_VIEW_PROPERTY(separatorColor, UIColor)
+
 RCT_CUSTOM_VIEW_PROPERTY(separatorStyle, UITableViewCellSeparatorStyle, RNTableView) {
     [view setSeparatorStyle:[RCTConvert NSInteger:json]];
 }
+
+#pragma mark -
+#pragma mark Constants
 
 - (NSDictionary *)constantsToExport {
     return @{
@@ -124,57 +202,8 @@ RCT_CUSTOM_VIEW_PROPERTY(separatorStyle, UITableViewCellSeparatorStyle, RNTableV
              };
 }
 
-RCT_CUSTOM_VIEW_PROPERTY(fontSize, CGFloat, RNTableView)
-{
-    view.font = [RCTConvert UIFont:view.font withSize:json ?: @(defaultView.font.pointSize)];
-}
-RCT_CUSTOM_VIEW_PROPERTY(fontWeight, NSString, RNTableView)
-{
-    view.font = [RCTConvert UIFont:view.font withWeight:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(fontStyle, NSString, RNTableView)
-{
-    view.font = [RCTConvert UIFont:view.font withStyle:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(fontFamily, NSString, RNTableView)
-{
-    view.font = [RCTConvert UIFont:view.font withFamily:json ?: defaultView.font.familyName];
-}
-
-RCT_CUSTOM_VIEW_PROPERTY(headerFontSize, CGFloat, RNTableView)
-{
-    view.headerFont = [RCTConvert UIFont:view.headerFont withSize:json ?: @(defaultView.font.pointSize)];
-}
-RCT_CUSTOM_VIEW_PROPERTY(headerFontWeight, NSString, RNTableView)
-{
-    view.headerFont = [RCTConvert UIFont:view.headerFont withWeight:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(headerFontStyle, NSString, RNTableView)
-{
-    view.headerFont = [RCTConvert UIFont:view.headerFont withStyle:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(headerFontFamily, NSString, RNTableView)
-{
-    view.headerFont = [RCTConvert UIFont:view.headerFont withFamily:json ?: defaultView.font.familyName];
-}
-
-
-RCT_CUSTOM_VIEW_PROPERTY(footerFontSize, CGFloat, RNTableView)
-{
-    view.footerFont = [RCTConvert UIFont:view.footerFont withSize:json ?: @(defaultView.font.pointSize)];
-}
-RCT_CUSTOM_VIEW_PROPERTY(footerFontWeight, NSString, RNTableView)
-{
-    view.footerFont = [RCTConvert UIFont:view.footerFont withWeight:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(footerFontStyle, NSString, RNTableView)
-{
-    view.footerFont = [RCTConvert UIFont:view.footerFont withStyle:json]; // defaults to normal
-}
-RCT_CUSTOM_VIEW_PROPERTY(footerFontFamily, NSString, RNTableView)
-{
-    view.footerFont = [RCTConvert UIFont:view.footerFont withFamily:json ?: defaultView.font.familyName];
-}
+#pragma mark -
+#pragma mark Notification
 
 RCT_EXPORT_METHOD(sendNotification:(NSDictionary *)data)
 {

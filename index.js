@@ -10,6 +10,7 @@ var {
   View,
   requireNativeComponent,
   ScrollView,
+  PropTypes
 } = React;
 
 var invariant = require('invariant');
@@ -32,22 +33,69 @@ var TableView = React.createClass({
     propTypes: {
         ...ScrollView.propTypes,
 
-        onPress: React.PropTypes.func,
-        onWillDisplayCell: React.PropTypes.func,
-        onEndDisplayingCell: React.PropTypes.func,
-        selectedValue: React.PropTypes.any, // string or integer basically
-        autoFocus: React.PropTypes.bool,
-        moveWithinSectionOnly: React.PropTypes.bool,
-        json: React.PropTypes.string,
-        textColor: React.PropTypes.string,
-        detailTextColor: React.PropTypes.string,
-        tintColor: React.PropTypes.string,
-        footerLabel: React.PropTypes.string,
-        headerFont: React.PropTypes.number,
-        headerTextColor: React.PropTypes.string,
-        footerTextColor: React.PropTypes.string,
-        separatorColor: React.PropTypes.string,
+        // Data Source
+        sections: PropTypes.array,
+        json: PropTypes.string,
+        filter: PropTypes.string,
+        filterArgs: PropTypes.array,
+        additionalItems: PropTypes.array,
 
+        // table view properties
+        tableViewStyle: PropTypes.number,
+        autoFocus: PropTypes.bool,
+        emptyInsets: PropTypes.bool,
+
+        fontSize: PropTypes.number,
+        fontWeight: PropTypes.string,
+        fontStyle: PropTypes.string,
+        fontFamily: PropTypes.string,
+
+        // header
+        headerHeight: PropTypes.number,
+        headerFontSize: PropTypes.number,
+        headerFontWeight: PropTypes.string,
+        headerFontStyle: PropTypes.string,
+        headerFontFamily: PropTypes.string,
+
+        // footer
+        footerHeight: PropTypes.number,
+        footerFontSize: PropTypes.number,
+        footerFontWeight: PropTypes.string,
+        footerFontFamily: PropTypes.string,
+        footerFontStyle: PropTypes.string,
+
+        // cell
+        tableViewCellStyle: PropTypes.number,
+        reactModuleForCell: PropTypes.string,
+        cellForRowAtIndexPath: PropTypes.array,
+        cellHeight: PropTypes.number,
+
+        textColor: PropTypes.string,
+        detailTextColor: PropTypes.string,
+        tintColor: PropTypes.string,
+
+        allowsToggle: PropTypes.bool,
+
+        allowsMultipleSelection: PropTypes.bool,
+        selectedSection: PropTypes.number,
+        selectedIndex: PropTypes.number,
+        selectedValue: PropTypes.any, // string or integer basically
+        selectedTextColor: PropTypes.string,
+
+        moveWithinSectionOnly: PropTypes.bool,
+
+        // Editing
+        editing: PropTypes.bool,
+        tableViewCellEditingStyle: PropTypes.number,
+
+        // separator
+        separatorColor: PropTypes.string,
+        separatorStyle: PropTypes.number,
+
+        // Events
+        onPress: PropTypes.func,
+        onWillDisplayCell: PropTypes.func,
+        onEndDisplayingCell: PropTypes.func,
 
         /**
          * The amount by which the content is inset from the edges
@@ -69,7 +117,6 @@ var TableView = React.createClass({
          * @platform ios
          */
         scrollIndicatorInsets: React.EdgeInsetsPropType,
-        tableViewCellEditingStyle: React.PropTypes.number,
     },
 
     getDefaultProps() {
@@ -153,7 +200,7 @@ var TableView = React.createClass({
       //     .filter((prop) => style && style[prop] !== undefined);
       //   invariant(
       //     childLayoutProps.length === 0,
-      //     'ScrollView child layout (' + JSON.stringify(childLayoutProps) +
+      //     'TableView child layout (' + JSON.stringify(childLayoutProps) +
       //       ') must by applied through the contentContainerStyle prop.'
       //   );
       // }
@@ -212,62 +259,62 @@ var TableView = React.createClass({
         props.decelerationRate = processDecelerationRate(decelerationRate);
       }
 
-      var ScrollViewClass;
+      var TableViewClass;
       if (Platform.OS === 'ios') {
-        ScrollViewClass = RNTableView;
+        TableViewClass = RNTableView;
       } else if (Platform.OS === 'android') {
         if (this.props.horizontal) {
-          ScrollViewClass = undefined;
+          TableViewClass = undefined;
         } else {
-          ScrollViewClass = undefined;
+          TableViewClass = undefined;
         }
       }
       invariant(
-        ScrollViewClass !== undefined,
-        'ScrollViewClass must not be undefined'
+        TableViewClass !== undefined,
+        'TableViewClass must not be undefined'
       );
 
       var refreshControl = this.props.refreshControl;
       if (refreshControl) {
         if (Platform.OS === 'ios') {
-          // On iOS the RefreshControl is a child of the ScrollView.
+          // On iOS the RefreshControl is a child of the TableView.
           return (
-            <ScrollViewClass  {...props}
-                              ref={TABLEVIEW}
-                              sections={this.state.sections}
-                              additionalItems={this.state.additionalItems}
-                              tableViewStyle={TableView.Consts.Style.Plain}
-                              tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-                              tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                              separatorStyle={TableView.Consts.SeparatorStyle.Line}
-                              scrollIndicatorInsets={this.props.contentInset}
-                              json={this.state.json}
-                              onPress={this._onPress}
-                              onChange={this._onChange}
-                              onWillDisplayCell={this._onWillDisplayCell}
-                              onEndDisplayingCell={this._onEndDisplayingCell}>
+            <TableViewClass ref={TABLEVIEW}
+                            sections={this.state.sections}
+                            additionalItems={this.state.additionalItems}
+                            tableViewStyle={TableView.Consts.Style.Plain}
+                            tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                            tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
+                            separatorStyle={TableView.Consts.SeparatorStyle.Line}
+                            scrollIndicatorInsets={this.props.contentInset}
+                            json={this.state.json}
+                            onPress={this._onPress}
+                            onChange={this._onChange}
+                            onWillDisplayCell={this._onWillDisplayCell}
+                            onEndDisplayingCell={this._onEndDisplayingCell}
+                            {...props}>
 
               <Header>{refreshControl}</Header>
               {this.state.children}
-            </ScrollViewClass>
+            </TableViewClass>
           );
         } else if (Platform.OS === 'android') {
-          // On Android wrap the ScrollView with a AndroidSwipeRefreshLayout.
-          // Since the ScrollView is wrapped add the style props to the
-          // AndroidSwipeRefreshLayout and use flex: 1 for the ScrollView.
+          // On Android wrap the TableView with a AndroidSwipeRefreshLayout.
+          // Since the TableView is wrapped add the style props to the
+          // AndroidSwipeRefreshLayout and use flex: 1 for the TableView.
           // return React.cloneElement(
           //   refreshControl,
           //   {style: props.style},
-          //   <ScrollViewClass {...props} style={styles.base} ref={SCROLLVIEW}>
+          //   <TableViewClass {...props} style={styles.base} ref={TABLEVIEW}>
           //     {contentContainer}
-          //   </ScrollViewClass>
+          //   </TableViewClass>
           // );
           return null;
         }
       }
 
       return (
-        <ScrollViewClass  {...props}
+        <TableViewClass  {...props}
                           ref={TABLEVIEW}
                           sections={this.state.sections}
                           additionalItems={this.state.additionalItems}
@@ -283,31 +330,8 @@ var TableView = React.createClass({
                           onEndDisplayingCell={this._onEndDisplayingCell}>
 
           {this.state.children}
-        </ScrollViewClass>
+        </TableViewClass>
       );
-        // return (
-        //     // <View style={[{flex:1},this.props.style]}>
-        //         <RNTableView
-        //             ref={TABLEVIEW}
-        //             style={[{flex:1},this.props.style]}
-        //             sections={this.state.sections}
-        //             additionalItems={this.state.additionalItems}
-        //             tableViewStyle={TableView.Consts.Style.Plain}
-        //             tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
-        //             tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-        //             separatorStyle={TableView.Consts.SeparatorStyle.Line}
-        //             scrollIndicatorInsets={this.props.contentInset}
-        //             {...this.props}
-        //             json={this.state.json}
-        //             onPress={this._onPress}
-        //             onChange={this._onChange}
-        //             onWillDisplayCell={this._onWillDisplayCell}
-        //             onEndDisplayingCell={this._onEndDisplayingCell}>
-        //
-        //             {this.state.children}
-        //         </RNTableView>
-        //     // </View>
-        // );
     },
 
     _onPress: function(event) {
@@ -358,14 +382,14 @@ var TableView = React.createClass({
     },
 
     endRefreshing: function() {
-      RCTScrollViewManager.endRefreshing(
+      RCTTableViewManager.endRefreshing(
         React.findNodeHandle(this)
       );
     },
 
     /**
      * Returns a reference to the underlying scroll responder, which supports
-     * operations like `scrollTo`. All ScrollView-like components should
+     * operations like `scrollTo`. All TableView-like components should
      * implement this method so that they can be composed while providing access
      * to the underlying scroll responder's methods.
      */
@@ -417,7 +441,7 @@ var TableView = React.createClass({
       if (__DEV__) {
         if (this.props.onScroll && !this.props.scrollEventThrottle) {
           console.log(
-            'You specified `onScroll` on a <ScrollView> but not ' +
+            'You specified `onScroll` on a <TableView> but not ' +
             '`scrollEventThrottle`. You will only receive one event. ' +
             'Using `16` you get all the events but be aware that it may ' +
             'cause frame drops, use a bigger number if you don\'t need as ' +
@@ -474,11 +498,11 @@ var RNFooterView = requireNativeComponent('RNTableFooterView', null);
 
 TableView.Section = React.createClass({
     propTypes: {
-        label: React.PropTypes.string,
-        footerLabel: React.PropTypes.string,
-        arrow: React.PropTypes.bool,
-        footerHeight: React.PropTypes.number,
-        headerHeight: React.PropTypes.number,
+        label: PropTypes.string,
+        footerLabel: PropTypes.string,
+        arrow: PropTypes.bool,
+        footerHeight: PropTypes.number,
+        headerHeight: PropTypes.number,
     },
 
     render: function() {
@@ -489,8 +513,8 @@ TableView.Section = React.createClass({
 
 TableView.Item = React.createClass({
     propTypes: {
-        value: React.PropTypes.any, // string or integer basically
-        label: React.PropTypes.string,
+        value: PropTypes.any, // string or integer basically
+        label: PropTypes.string,
     },
 
     render: function() {
