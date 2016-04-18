@@ -12,6 +12,7 @@
 #import "RCTConvert.h"
 #import "RCTUIManager.h"
 #import "RCTScrollableProtocol.h"
+#import "RCTConvert+UITableView.h"
 
 @interface RNTableView (Private)
 
@@ -60,9 +61,7 @@ RCT_EXPORT_VIEW_PROPERTY(additionalItems, NSArray)
 #pragma mark -
 #pragma mark Table View Properties
 
-RCT_CUSTOM_VIEW_PROPERTY(tableViewStyle, UITableViewStyle, RNTableView) {
-    [view setTableViewStyle:[RCTConvert NSInteger:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(tableViewStyle, UITableViewStyle)
 
 RCT_EXPORT_VIEW_PROPERTY(autoFocus, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(emptyInsets, BOOL)
@@ -120,9 +119,7 @@ RCT_CUSTOM_VIEW_PROPERTY(footerFontFamily, NSString, RNTableView) {
 #pragma mark -
 #pragma mark Cell
 
-RCT_CUSTOM_VIEW_PROPERTY(tableViewCellStyle, UITableViewStyle, RNTableView) {
-    [view setTableViewCellStyle:[RCTConvert NSInteger:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(tableViewCellStyle, UITableViewCellStyle)
 /*Each cell is a separate app, multiple cells share the app/module name*/
 RCT_CUSTOM_VIEW_PROPERTY(reactModuleForCell, NSString*, RNTableView) {
     [view setReactModuleForCell:[RCTConvert NSString:json]];
@@ -151,56 +148,14 @@ RCT_EXPORT_VIEW_PROPERTY(moveWithinSectionOnly, BOOL)
 
 RCT_EXPORT_VIEW_PROPERTY(editing, BOOL)
 
-RCT_CUSTOM_VIEW_PROPERTY(tableViewCellEditingStyle, UITableViewCellEditingStyle, RNTableView) {
-    [view setTableViewCellEditingStyle:[RCTConvert NSInteger:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(tableViewCellEditingStyle, UITableViewCellEditingStyle)
 
 #pragma mark -
 #pragma mark Separator
 
 RCT_EXPORT_VIEW_PROPERTY(separatorColor, UIColor)
 
-RCT_CUSTOM_VIEW_PROPERTY(separatorStyle, UITableViewCellSeparatorStyle, RNTableView) {
-    [view setSeparatorStyle:[RCTConvert NSInteger:json]];
-}
-
-#pragma mark -
-#pragma mark Constants
-
-- (NSDictionary *)constantsToExport {
-    return @{
-             @"Style": @{
-                     @"Plain": @(UITableViewStylePlain),
-                     @"Grouped": @(UITableViewStyleGrouped)
-                     },
-             @"CellStyle": @{
-                     @"Default": @(UITableViewCellStyleDefault),
-                     @"Value1": @(UITableViewCellStyleValue1),
-                     @"Value2": @(UITableViewCellStyleValue2),
-                     @"Subtitle": @(UITableViewCellStyleSubtitle)
-                     },
-             @"CellEditingStyle": @{
-                     @"None": @(UITableViewCellEditingStyleNone),
-                     @"Delete": @(UITableViewCellEditingStyleDelete),
-                     @"Insert": @(UITableViewCellEditingStyleInsert)
-                     },
-             @"CellSelectionStyle": @{
-                     @"None": @(UITableViewCellSelectionStyleNone),
-                     @"Blue": @(UITableViewCellSelectionStyleBlue),
-                     @"Gray": @(UITableViewCellSelectionStyleGray),
-                     @"Default": @(UITableViewCellSelectionStyleDefault)
-                     },
-             @"SeparatorStyle": @{
-                     @"None": @(UITableViewCellSeparatorStyleNone),
-                     @"Line": @(UITableViewCellSeparatorStyleSingleLine),
-                     @"LineEtched": @(UITableViewCellSeparatorStyleSingleLineEtched)
-                     },
-             @"DecelerationRate": @{
-                     @"normal": @(UIScrollViewDecelerationRateNormal),
-                     @"fast": @(UIScrollViewDecelerationRateFast),
-                     },
-             };
-}
+RCT_EXPORT_VIEW_PROPERTY(separatorStyle, UITableViewCellSeparatorStyle)
 
 #pragma mark -
 #pragma mark Notification
@@ -248,6 +203,7 @@ RCT_CUSTOM_VIEW_PROPERTY(contentOffset, CGPoint, RNTableView) {
 }
 RCT_EXPORT_VIEW_PROPERTY(onRefreshStart, RCTDirectEventBlock)
 
+// Use ScrollView.Constants.DecelerationRate
 //- (NSDictionary<NSString *, id> *)constantsToExport
 //{
 //    return @{

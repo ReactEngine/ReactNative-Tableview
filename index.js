@@ -17,8 +17,6 @@ var invariant = require('invariant');
 
 import TableViewScrollResponder from './TableViewScrollResponder.js'
 
-var RNTableViewConsts = NativeModules.UIManager.RNTableView.Constants;
-
 var TABLEVIEW = 'tableview';
 
 function extend(el, map) {
@@ -41,7 +39,10 @@ var TableView = React.createClass({
         additionalItems: PropTypes.array,
 
         // table view properties
-        tableViewStyle: PropTypes.number,
+        tableViewStyle: PropTypes.oneOf([
+          'plain',
+          'grouped'
+        ]),
         autoFocus: PropTypes.bool,
         emptyInsets: PropTypes.bool,
 
@@ -65,7 +66,12 @@ var TableView = React.createClass({
         footerFontStyle: PropTypes.string,
 
         // cell
-        tableViewCellStyle: PropTypes.number,
+        tableViewCellStyle: PropTypes.oneOf([
+          'default',
+          'value1',
+          'value2',
+          'subtitle'
+        ]),
         reactModuleForCell: PropTypes.string,
         cellForRowAtIndexPath: PropTypes.array,
         cellHeight: PropTypes.number,
@@ -86,11 +92,19 @@ var TableView = React.createClass({
 
         // Editing
         editing: PropTypes.bool,
-        tableViewCellEditingStyle: PropTypes.number,
+        tableViewCellEditingStyle: PropTypes.oneOf([
+          'none',
+          'delete',
+          'insert'
+        ]),
 
         // separator
         separatorColor: PropTypes.string,
-        separatorStyle: PropTypes.number,
+        separatorStyle: PropTypes.oneOf([
+          'none',
+          'singleLine',
+          'singleLineEtched'
+        ]),
 
         // Events
         onPress: PropTypes.func,
@@ -121,7 +135,7 @@ var TableView = React.createClass({
 
     getDefaultProps() {
         return {
-            tableViewCellEditingStyle: RNTableViewConsts.CellEditingStyle.Delete,
+            tableViewCellEditingStyle: "delete",
         };
     },
 
@@ -282,10 +296,10 @@ var TableView = React.createClass({
             <TableViewClass ref={TABLEVIEW}
                             sections={this.state.sections}
                             additionalItems={this.state.additionalItems}
-                            tableViewStyle={TableView.Consts.Style.Plain}
-                            tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                            tableViewStyle={'plain'}
+                            tableViewCellStyle={'subtitle'}
                             tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                            separatorStyle={TableView.Consts.SeparatorStyle.Line}
+                            separatorStyle={'singleLine'}
                             scrollIndicatorInsets={this.props.contentInset}
                             json={this.state.json}
                             onPress={this._onPress}
@@ -318,10 +332,10 @@ var TableView = React.createClass({
                           ref={TABLEVIEW}
                           sections={this.state.sections}
                           additionalItems={this.state.additionalItems}
-                          tableViewStyle={TableView.Consts.Style.Plain}
-                          tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                          tableViewStyle={'plain'}
+                          tableViewCellStyle={'subtitle'}
                           tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                          separatorStyle={TableView.Consts.SeparatorStyle.Line}
+                          separatorStyle={'singleLine'}
                           scrollIndicatorInsets={this.props.contentInset}
                           json={this.state.json}
                           onPress={this._onPress}
@@ -550,8 +564,10 @@ var styles = StyleSheet.create({
     },
 });
 
-TableView.Consts = RNTableViewConsts;
+var RNTableView = requireNativeComponent('RNTableView', TableView, {
+  nativeOnly: {
 
-var RNTableView = requireNativeComponent('RNTableView', TableView);
+  }
+});
 
 module.exports = TableView;

@@ -48,7 +48,7 @@ class FirebaseExample extends React.Component {
             <View style={{flex:1}}>
                 <Text value="">All Items</Text>
                 <TableView style={{flex:1}} reactModuleForCell={this.reactCellModule}
-                           tableViewCellStyle={TableView.Consts.CellStyle.Default}
+                           tableViewCellStyle={'default'}
                            onPress={(event) => alert(JSON.stringify(event))}>
                     <Section arrow={true}>
                         {items}

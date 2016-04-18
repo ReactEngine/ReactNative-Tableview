@@ -11,8 +11,8 @@ class MultipleSectionsExample extends React.Component {
             <TableView style={{flex:1}}
                        allowsToggle={true}
                        allowsMultipleSelection={true}
-                       tableViewStyle={TableView.Consts.Style.Grouped}
-                       tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                       tableViewStyle={'grouped'}
+                       tableViewCellStyle={'subtitle'}
                        onPress={(event) => alert(JSON.stringify(event))}
             >
                 <Section label="Section 1" arrow={true}>

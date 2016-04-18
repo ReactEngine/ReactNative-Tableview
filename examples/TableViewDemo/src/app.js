@@ -25,7 +25,6 @@ import Launch   from './launch'
 import Example1 from './table/custom'
 import Example2 from './table/jsonData'
 import Example3 from './table/multipleSections'
-import Edit     from './table/editable'
 import ReusableCellExample1 from './table/reusable1'
 import ReusableCellExample2 from './table/reusable2'
 import FirebaseExample from './table/firebase'
@@ -47,7 +46,6 @@ export default function native(platform) {
                   <Route name="example1" component={Example1} title="Example 1"/>
                   <Route name="example2" component={Example2} title="Example 2"/>
                   <Route name="example3" component={Example3} title="Example 3"/>
-                  <Route name="edit" component={Edit} hideNavBar={true}/>
                   <Route name="example4" component={ReusableCellExample1} title="Reusable Cell Example 1"/>
                   <Route name="example5" component={ReusableCellExample2} title="Reusable Custom Cells"/>
                   <Route name="example6" component={FirebaseExample} title="Firebase Example"/>

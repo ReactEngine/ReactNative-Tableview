@@ -158,7 +158,7 @@ class CustomEditableExample extends React.Component {
                 {!editing && this.getAddItemRow()}
 
                 <TableView editing={editing} style={{flex:1}} reactModuleForCell={this.reactCellModule}
-                           tableViewCellStyle={TableView.Consts.CellStyle.Default}
+                           tableViewCellStyle={'default'}
                            onChange={this.onChange.bind(this)}
                     >
                     <Section canMove={editing} canEdit={editing} arrow={!editing}>

@@ -19,6 +19,7 @@
 		8799E1E01BF1152400AF9A67 /* RNTableFooterViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1DF1BF1152400AF9A67 /* RNTableFooterViewManager.m */; };
 		8799E1E31BF117F600AF9A67 /* RNTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1E21BF117F600AF9A67 /* RNTableHeaderView.m */; };
 		8799E1E61BF1181400AF9A67 /* RNTableHeaderViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */; };
+		9DB5DF541CC0F6EC002293EF /* RCTConvert+UITableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,8 @@
 		8799E1E21BF117F600AF9A67 /* RNTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNTableHeaderView.m; sourceTree = "<group>"; };
 		8799E1E41BF1181400AF9A67 /* RNTableHeaderViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNTableHeaderViewManager.h; sourceTree = "<group>"; };
 		8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNTableHeaderViewManager.m; sourceTree = "<group>"; };
+		9DB5DF521CC0F6EC002293EF /* RCTConvert+UITableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+UITableView.h"; sourceTree = "<group>"; };
+		9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+UITableView.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,8 @@
 				8799E1E21BF117F600AF9A67 /* RNTableHeaderView.m */,
 				8799E1E41BF1181400AF9A67 /* RNTableHeaderViewManager.h */,
 				8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */,
+				9DB5DF521CC0F6EC002293EF /* RCTConvert+UITableView.h */,
+				9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */,
 			);
 			path = RNTableView;
 			sourceTree = "<group>";
@@ -186,6 +191,7 @@
 				872545E21BAAC85D00889249 /* RNCellView.m in Sources */,
 				872545E31BAAC85D00889249 /* RNCellViewManager.m in Sources */,
 				8799E1E01BF1152400AF9A67 /* RNTableFooterViewManager.m in Sources */,
+				9DB5DF541CC0F6EC002293EF /* RCTConvert+UITableView.m in Sources */,
 				872545E51BAAC85D00889249 /* RNTableViewCell.m in Sources */,
 				0808A0331C67E9A60038993A /* RNReactModuleCell.m in Sources */,
 				8799E1DD1BF114F900AF9A67 /* RNTableFooterView.m in Sources */,

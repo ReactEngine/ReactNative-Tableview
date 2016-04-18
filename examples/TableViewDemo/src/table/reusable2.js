@@ -16,7 +16,7 @@ class ReusableCellExample2 extends React.Component {
             <TableView reactModuleForCell="TableViewExampleCell" style={{flex:1}}
                        allowsToggle={true}
                        allowsMultipleSelection={true}
-                       tableViewStyle={TableView.Consts.Style.Grouped}
+                       tableViewStyle={'grouped'}
                        onPress={(event) => alert(JSON.stringify(event))}>
                 <Section label="Section 1" arrow={true}>
                     <Item>Item 1</Item>

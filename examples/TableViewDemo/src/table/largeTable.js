@@ -16,7 +16,7 @@ class LargeTableExample extends React.Component {
             <TableView reactModuleForCell="TableViewExampleCell" style={{flex:1}}
                            allowsToggle={true}
                            allowsMultipleSelection={true}
-                           tableViewStyle={TableView.Consts.Style.Grouped}
+                           tableViewStyle={'grouped'}
                            onPress={(event) => alert(JSON.stringify(event))}>
                 <Section label={"large section - "+numAdditionaItems+" items"} arrow={true}>
                     {items.map((i)=><Item key={i+1}>{i+1}</Item>)}

@@ -13,7 +13,7 @@ class JSONDatasourceExample extends React.Component {
                        style={{flex:1}}
                        json="states"
                        filter={`country=='${country}'`}
-                       tableViewCellStyle={TableView.Consts.CellStyle.Subtitle}
+                       tableViewCellStyle={'subtitle'}
                        onPress={(event) => alert(JSON.stringify(event))}
             >
                 <Item value="">All states</Item>

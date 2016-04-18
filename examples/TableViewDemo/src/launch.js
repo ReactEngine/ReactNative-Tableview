@@ -39,7 +39,6 @@ class Launch extends React.Component {
                     <Item onPress={Actions.example1}>Example with custom cells</Item>
                     <Item onPress={Actions.example2}>Example with app bundle JSON data</Item>
                     <Item onPress={Actions.example3}>Example with multiple sections</Item>
-                    <Item onPress={Actions.edit}>Example with editing mode</Item>
                     <Item onPress={Actions.example4}>Reusable Cell Example 1</Item>
                     <Item onPress={Actions.example5}>Reusable Custom Cells</Item>
                     <Item onPress={Actions.example6}>Firebase Example</Item>
