@@ -31,6 +31,8 @@ var TableView = React.createClass({
     propTypes: {
         ...View.propTypes,
 
+        style: View.propTypes.style,
+
         // Data Source
         sections: PropTypes.array,
         json: PropTypes.string,
@@ -294,7 +296,6 @@ var TableView = React.createClass({
          */
         showsVerticalScrollIndicator: PropTypes.bool,
 
-        style: StyleSheetPropType(ViewStylePropTypes),
         /**
          * When set, causes the scroll view to stop at multiples of the value of
          * `snapToInterval`. This can be used for paginating through children
@@ -456,15 +457,20 @@ var TableView = React.createClass({
         onResponderRelease: this.scrollResponderHandleResponderRelease,
         onResponderReject: this.scrollResponderHandleResponderReject,
         sendMomentumEvents: (this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd) ? true : false,
-      };
 
-      var onRefreshStart = this.props.onRefreshStart;
-      if (onRefreshStart) {
-        // this is necessary because if we set it on props, even when empty,
-        // it'll trigger the default pull-to-refresh behavior on native.
-        props.onRefreshStart =
-          function() { onRefreshStart && onRefreshStart(this.endRefreshing); }.bind(this);
-      }
+        sections: this.state.sections,
+        additionalItems: this.state.additionalItems,
+        tableViewStyle: 'plain',
+        tableViewCellStyle: 'subtitle',
+        tableViewCellEditingStyle: this.props.tableViewCellEditingStyle,
+        separatorStyle: 'singleLine',
+        scrollIndicatorInsets: this.props.contentInset,
+        json: this.state.json,
+        onPress: this._onPress,
+        onChange: this._onChange,
+        onWillDisplayCell: this._onWillDisplayCell,
+        onEndDisplayingCell: this._onEndDisplayingCell,
+      };
 
       var { decelerationRate } = this.props;
       if (decelerationRate) {
@@ -491,21 +497,7 @@ var TableView = React.createClass({
         if (Platform.OS === 'ios') {
           // On iOS the RefreshControl is a child of the TableView.
           return (
-            <TableViewClass ref={TABLEVIEW}
-                            sections={this.state.sections}
-                            additionalItems={this.state.additionalItems}
-                            tableViewStyle={'plain'}
-                            tableViewCellStyle={'subtitle'}
-                            tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                            separatorStyle={'singleLine'}
-                            scrollIndicatorInsets={this.props.contentInset}
-                            json={this.state.json}
-                            onPress={this._onPress}
-                            onChange={this._onChange}
-                            onWillDisplayCell={this._onWillDisplayCell}
-                            onEndDisplayingCell={this._onEndDisplayingCell}
-                            {...props}>
-
+            <TableViewClass {...props} ref={TABLEVIEW}>
               <Header>{refreshControl}</Header>
               {this.state.children}
             </TableViewClass>
@@ -526,42 +518,46 @@ var TableView = React.createClass({
       }
 
       return (
-        <TableViewClass  {...props}
-                          ref={TABLEVIEW}
-                          sections={this.state.sections}
-                          additionalItems={this.state.additionalItems}
-                          tableViewStyle={'plain'}
-                          tableViewCellStyle={'subtitle'}
-                          tableViewCellEditingStyle={this.props.tableViewCellEditingStyle}
-                          separatorStyle={'singleLine'}
-                          scrollIndicatorInsets={this.props.contentInset}
-                          json={this.state.json}
-                          onPress={this._onPress}
-                          onChange={this._onChange}
-                          onWillDisplayCell={this._onWillDisplayCell}
-                          onEndDisplayingCell={this._onEndDisplayingCell}>
-
+        <TableViewClass {...props} ref={TABLEVIEW}>
           {this.state.children}
         </TableViewClass>
       );
     },
 
     _onPress: function(event) {
-        var data = event.nativeEvent;
-        if (this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex] &&
-            this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex].onPress){
-            this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex].onPress(data);
+        let data = event.nativeEvent;
+        let sec = this.sections[data.selectedSection];
+        let item = sec ? sec.items[data.selectedIndex] : null;
+        let onPress = item ? item.onPress : null;
+        if (onPress) {
+            onPress(data);
         }
         if (this.props.onPress) {
             this.props.onPress(data);
         }
         event.stopPropagation();
     },
+    _onAccessoryPress: function(event) {
+        console.log('_onAccessoryPress', event);
+        let data = event.nativeEvent;
+        let sec = this.sections[data.selectedSection];
+        let item = sec ? sec.items[data.selectedIndex] : null;
+        let onAccessoryPress = item ? item.onAccessoryPress : null;
+        if (onAccessoryPress) {
+            onAccessoryPress(data);
+        }
+        if (this.props.onAccessoryPress) {
+            this.props.onAccessoryPress(data);
+        }
+        event.stopPropagation();
+    },
     _onChange: function(event) {
-        var data = event.nativeEvent;
-        if (this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex] &&
-            this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex].onChange){
-            this.sections[data.selectedSection] && this.sections[data.selectedSection].items[data.selectedIndex].onChange(data);
+      let data = event.nativeEvent;
+      let sec = this.sections[data.selectedSection];
+      let item = sec ? sec.items[data.selectedIndex] : null;
+      let onChange = item ? item.onChange : null;
+        if (onChange) {
+            onChange(data);
         }
         if (this.props.onChange) {
             this.props.onChange(data);
@@ -569,9 +565,12 @@ var TableView = React.createClass({
         event.stopPropagation();
     },
     _onWillDisplayCell: function(event) {
-        var data = event.nativeEvent;
-        if (this.sections[data.section] && this.sections[data.section].items[data.row] && this.sections[data.section].items[data.row].onWillDisplayCell) {
-            this.sections[data.section].items[data.row].onWillDisplayCell(data);
+        let data = event.nativeEvent;
+        let sec = this.sections[data.section];
+        let row = sec ? sec.items[data.row] : null;
+        let onWillDisplayCell = row ? row.onWillDisplayCell : null;
+        if (onWillDisplayCell) {
+            onWillDisplayCell(data);
         }
         if (this.props.onWillDisplayCell) {
             this.props.onWillDisplayCell(data);
@@ -579,9 +578,12 @@ var TableView = React.createClass({
         event.stopPropagation();
     },
     _onEndDisplayingCell: function(event) {
-        var data = event.nativeEvent;
-        if (this.sections[data.section] && this.sections[data.section].items[data.row] && this.sections[data.section].items[data.row].onEndDisplayingCell) {
-            this.sections[data.section].items[data.row].onEndDisplayingCell(data);
+      let data = event.nativeEvent;
+      let sec = this.sections[data.section];
+      let row = sec ? sec.items[data.row] : null;
+      let onEndDisplayingCell = row ? row.onEndDisplayingCell : null;
+        if (onEndDisplayingCell) {
+            onEndDisplayingCell(data);
         }
         if (this.props.onEndDisplayingCell) {
             this.props.onEndDisplayingCell(data);
