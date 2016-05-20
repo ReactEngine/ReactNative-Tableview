@@ -15,7 +15,7 @@ var {
 
 var invariant = require('invariant');
 
-import TableViewScrollResponder from './TableViewScrollResponder.js'
+import TableViewScrollResponder from './src/TableViewScrollResponder.js'
 
 var TABLEVIEW = 'tableview';
 

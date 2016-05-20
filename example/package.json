@@ -1,0 +1,17 @@
+{
+  "name": "TableViewDemo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "firebase": "^2.4.2",
+    "react": "^0.14.8",
+    "react-native": "^0.23.1",
+    "react-native-navbar": "^1.4.2",
+    "react-native-rich-tableview": "../",
+    "react-native-router-flux": "^2.3.13",
+    "react-native-tabs": "^1.0.5"
+  }
+}
