@@ -25,7 +25,7 @@
 RCT_EXPORT_MODULE()
 - (UIView *)view
 {
-    return [[RNTableView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
+    return [[RNTableView alloc] initWithBridge:self.bridge];
 }
 
 #pragma mark -

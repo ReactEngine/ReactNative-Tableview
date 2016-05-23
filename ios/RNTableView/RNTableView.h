@@ -13,8 +13,6 @@
 #import "RCTScrollableProtocol.h"
 #import "RCTView.h"
 
-@class RCTEventDispatcher;
-
 @protocol RNTableViewDatasource <NSObject>
 
 // create method with params dictionary
@@ -32,7 +30,7 @@ RCTScrollableProtocol,
 RCTAutoInsetsProtocol
 >
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, readonly) UITableView *tableView;
 

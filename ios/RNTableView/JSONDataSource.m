@@ -9,7 +9,7 @@
 #import "JSONDataSource.h"
 
 @implementation JSONDataSource
--(id)initWithFilename:(NSString *)filename filter:(NSString *)filter args:(NSArray *)filterArgs {
+- (id)initWithFilename:(NSString *)filename filter:(NSString *)filter args:(NSArray *)filterArgs {
     NSString *jsonPath = [[NSBundle mainBundle] pathForResource:filename
                                                          ofType:@"json"];
     

@@ -711,14 +711,6 @@ TableView.Footer = React.createClass({
 var RNFooterView = requireNativeComponent('RNTableFooterView', null);
 
 TableView.Section = React.createClass({
-    propTypes: {
-        label: PropTypes.string,
-        footerLabel: PropTypes.string,
-        arrow: PropTypes.bool,
-        footerHeight: PropTypes.number,
-        headerHeight: PropTypes.number,
-    },
-
     render: function() {
         // These items don't get rendered directly.
         return null;
@@ -726,11 +718,6 @@ TableView.Section = React.createClass({
 });
 
 TableView.Item = React.createClass({
-    propTypes: {
-        value: PropTypes.any, // string or integer basically
-        label: PropTypes.string,
-    },
-
     render: function() {
         // These items don't get rendered directly.
         return null;

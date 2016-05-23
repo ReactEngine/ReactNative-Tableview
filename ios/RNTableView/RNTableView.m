@@ -21,7 +21,6 @@
 #import "RNTableFooterView.h"
 #import "RNTableHeaderView.h"
 #import "RNReactModuleCell.h"
-#import "RNAppGlobals.h"
 
 @interface RCTEventDispatcher (RCTScrollView)
 
@@ -65,12 +64,16 @@
 #pragma mark -
 #pragma mark Constructors
 
-- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher {
-    RCTAssertParam(eventDispatcher);
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
+    RCTAssertParam(bridge);
     
     if ((self = [super initWithFrame:CGRectZero])) {
-        _bridge = [[RNAppGlobals sharedInstance] appBridge];
-        _eventDispatcher = eventDispatcher;
+        _bridge = bridge;
+        while ([_bridge respondsToSelector:NSSelectorFromString(@"parentBridge")]
+               && [_bridge valueForKey:@"parentBridge"]) {
+            _bridge = [_bridge valueForKey:@"parentBridge"];
+        }
+        _eventDispatcher = bridge.eventDispatcher;
         _cellHeight = 44;
         _cells = [NSMutableArray array];
         _autoFocus = YES;

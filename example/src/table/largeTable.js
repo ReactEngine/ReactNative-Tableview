@@ -13,13 +13,13 @@ class LargeTableExample extends React.Component {
             items.push(i);
         }
         return (
-            <TableView reactModuleForCell="TableViewExampleCell" style={{flex:1}}
-                           allowsToggle={true}
-                           allowsMultipleSelection={true}
-                           tableViewStyle={'grouped'}
-                           onPress={(event) => alert(JSON.stringify(event))}>
+            <TableView  reactModuleForCell="TableViewExampleCell"
+                        style={{flex:1}}
+                        allowsToggle={true}
+                        tableViewStyle={'grouped'}
+                        onPress={(event) => alert(JSON.stringify(event))}>
                 <Section label={"large section - "+numAdditionaItems+" items"} arrow={true}>
-                    {items.map((i)=><Item key={i+1}>{i+1}</Item>)}
+                    {items.map((i)=><Item key={i+1}>{(i+1).toString()}</Item>)}
                 </Section>
             </TableView>
         );

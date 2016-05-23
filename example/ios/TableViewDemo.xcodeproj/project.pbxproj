@@ -23,6 +23,8 @@
 		9D34E1421CEEFCEC00D23025 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D34E1331CEEF17B00D23025 /* libRCTWebSocket.a */; };
 		9D34E1431CEEFCEC00D23025 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D34E0FD1CEEF11000D23025 /* libReact.a */; };
 		9D34E1441CEEFCEC00D23025 /* libRNTableView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D34E1391CEEF1BF00D23025 /* libRNTableView.a */; };
+		9D34E15C1CEF119200D23025 /* states.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D34E15B1CEF119200D23025 /* states.json */; };
+		9D34E15E1CEF119C00D23025 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D34E15D1CEF119C00D23025 /* countries.json */; };
 		9DA460521CAC015C0002BE8A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DA460511CAC015C0002BE8A /* libz.tbd */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +128,8 @@
 		9D34E1281CEEF17600D23025 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
 		9D34E12E1CEEF17B00D23025 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		9D34E1341CEEF1BF00D23025 /* RNTableView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNTableView.xcodeproj; path = ../../ios/RNTableView.xcodeproj; sourceTree = "<group>"; };
+		9D34E15B1CEF119200D23025 /* states.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = states.json; path = ../../states.json; sourceTree = "<group>"; };
+		9D34E15D1CEF119C00D23025 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countries.json; path = ../../countries.json; sourceTree = "<group>"; };
 		9DA460511CAC015C0002BE8A /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -198,6 +202,8 @@
 				9D34E0EC1CEEF0ED00D23025 /* LaunchScreen.xib */,
 				9D34E0EE1CEEF0ED00D23025 /* Images.xcassets */,
 				9D34E0EF1CEEF0ED00D23025 /* Info.plist */,
+				9D34E15B1CEF119200D23025 /* states.json */,
+				9D34E15D1CEF119C00D23025 /* countries.json */,
 				9D34E0F01CEEF0ED00D23025 /* main.jsbundle */,
 				9D34E0F11CEEF0ED00D23025 /* main.m */,
 			);
@@ -481,6 +487,8 @@
 				9D34E0F31CEEF0ED00D23025 /* LaunchScreen.xib in Resources */,
 				9D34E0F41CEEF0ED00D23025 /* Images.xcassets in Resources */,
 				9D34E0F61CEEF0ED00D23025 /* main.jsbundle in Resources */,
+				9D34E15E1CEF119C00D23025 /* countries.json in Resources */,
+				9D34E15C1CEF119200D23025 /* states.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
