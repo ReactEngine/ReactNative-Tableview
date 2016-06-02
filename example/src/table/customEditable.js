@@ -111,15 +111,15 @@ export default class CustomEditableExample extends React.Component {
                 handler: function onNext() {
                     self.editOrSave();
                 }
-            }
-        };
-        navProps.leftButton = {
-            title: (this.state.editing?'Cancel':'Back'),
-            handler: function onNext() {
-                if (self.state.editing)
-                    self.cancelEditing();
-                else {
-                    Actions.pop();
+            },
+            leftButton: {
+                title: (this.state.editing?'Cancel':'Back'),
+                handler: function onNext() {
+                    if (self.state.editing) {
+                        self.cancelEditing();
+                    } else {
+                        Actions.pop();
+                    }
                 }
             }
         };
