@@ -11,24 +11,24 @@
  */
 'use strict';
 
-var ReactNative = require('react-native');
-var React = require('react');
-var invariant = require('invariant');
-// var warning = require('warning');
+import React from 'react';
 
-var {
+import ReactNative, {
   Dimensions,
   Platform,
   DeviceEventEmitter,
   UIManager,
   NativeModules,
   TextInput
-} = ReactNative;
+} from 'react-native';
 
-var {
+let {
   RNTableViewManager,
   ReactComponent
 } = NativeModules;
+
+import invariant from 'invariant';
+// var warning = require('warning');
 
 // var Subscribable = require('Subscribable');
 // import type ReactComponent from 'ReactComponent';

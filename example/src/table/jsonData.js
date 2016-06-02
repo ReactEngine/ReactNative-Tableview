@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
+import React, { Component } from 'react';
+import TableView from 'react-native-rich-tableview';
 var Item = TableView.Item;
 
-class JSONDatasourceExample extends React.Component {
+export default class JSONDatasourceExample extends Component {
     // list spanish provinces and add 'All states' item at the beginning
     render() {
         var country = "ES";
@@ -21,5 +21,3 @@ class JSONDatasourceExample extends React.Component {
         );
     }
 }
-
-module.exports = JSONDatasourceExample;

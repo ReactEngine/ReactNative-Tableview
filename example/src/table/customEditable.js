@@ -1,15 +1,15 @@
 'use strict';
 
-var React = require('react-native');
-var { Text, View, TouchableHighlight, TextInput } = React;
-var TableView = require('react-native-rich-tableview');
+import React, { Component } from 'react';
+import ReactNative, { Text, View, TouchableHighlight, TextInput } from 'react-native';
+import TableView from 'react-native-rich-tableview';
 var Section = TableView.Section;
 var Item = TableView.Item;
-var { Actions } = require('react-native-router-flux');
+import { Actions } from 'react-native-router-flux';
 
 import NavBar from '../NavBar.js'
 
-class CustomEditableExample extends React.Component {
+export default class CustomEditableExample extends React.Component {
     constructor(props) {
         super(props);
         this.state = {data:null,editing:false,text:""};
@@ -169,6 +169,3 @@ class CustomEditableExample extends React.Component {
         );
     }
 }
-
-
-module.exports = CustomEditableExample;

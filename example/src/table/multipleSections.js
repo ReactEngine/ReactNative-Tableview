@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
+import React from 'react';
+import TableView from 'react-native-rich-tableview';
 var Section = TableView.Section;
 var Item = TableView.Item;
 
-class MultipleSectionsExample extends React.Component {
+export default class MultipleSectionsExample extends React.Component {
     render(){
         return (
             <TableView style={{flex:1}}
@@ -47,5 +47,3 @@ class MultipleSectionsExample extends React.Component {
         );
     }
 }
-
-module.exports = MultipleSectionsExample;

@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
-var Item = TableView.Item;
+import React from 'react';
+import TableView from 'react-native-rich-tableview';
+let Item = TableView.Item;
 
 //Similar to example 2 but use "TableViewExampleCell" reusable cells
-class ReusableCellExample1 extends React.Component {
+export default class ReusableCellExample1 extends React.Component {
     // list spanish provinces and add 'All states' item at the beginning
     render() {
         var country = "ES";
@@ -22,5 +22,3 @@ class ReusableCellExample1 extends React.Component {
         );
     }
 }
-
-module.exports = ReusableCellExample1;

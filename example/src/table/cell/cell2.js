@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react-native');
-var { Text, View } = React;
+import React, { Component } from 'react';
+import ReactNative, { Text, View } from 'react-native';
 
 //Should be pure... setState on top-level component doesn't seem to work
-class TableViewExampleCell2 extends React.Component {
+export default class TableViewExampleCell2 extends Component {
     render(){
         var style = {};
         //cell height is passed from <Item> child of tableview and native code passes it back up to javascript in "app params" for the cell.
@@ -20,5 +20,3 @@ class TableViewExampleCell2 extends React.Component {
         return (<View style={style}><Text>{this.props.data.label}</Text></View>);
     }
 }
-
-module.exports = TableViewExampleCell2;

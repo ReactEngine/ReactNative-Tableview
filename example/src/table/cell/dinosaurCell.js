@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react-native');
-var { Text, View } = React;
+import React, { Component } from 'react';
+import ReactNative, { Text, View } from 'react-native';
 
 //Should be pure... setState on top-level component doesn't seem to work
-class DinosaurCell extends React.Component {
+export default class DinosaurCell extends Component {
     yearsAgoInMil(num) {
         return ((-1 * num)/1000000)+" million years ago";
     }
@@ -34,5 +34,3 @@ class DinosaurCell extends React.Component {
         </View>);
     }
 }
-
-module.exports = DinosaurCell;

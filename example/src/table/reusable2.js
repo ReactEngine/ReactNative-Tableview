@@ -1,11 +1,12 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
-var Section = TableView.Section;
-var Item = TableView.Item;
+import React from 'react'
+import ReactNative from 'react-native';
+import TableView from 'react-native-rich-tableview';
+let Section = TableView.Section;
+let Item = TableView.Item;
 
-class ReusableCellExample2 extends React.Component {
+export default class ReusableCellExample2 extends React.Component {
     render(){
         var numAdditionaItems = 1000;
         var moreItems = [];
@@ -46,12 +47,10 @@ class ReusableCellExample2 extends React.Component {
                     <Item>Item 2</Item>
                     <Item>Item 3</Item>
                 </Section>
-                <Section label={"large section - "+numAdditionaItems+" items"}>
+                <Section label={'large section - '+numAdditionaItems+' items'}>
                     {moreItems.map((i)=><Item key={i+1}>{i+1}</Item>)}
                 </Section>
             </TableView>
         );
     }
 }
-
-module.exports = ReusableCellExample2;

@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
+import React from 'react';
+import TableView from 'react-native-rich-tableview';
 var Section = TableView.Section;
 var Item = TableView.Item;
 
-class LargeTableExample extends React.Component {
+export default class LargeTableExample extends React.Component {
     render() {
         var numAdditionaItems = 1000;
         var items = [];
@@ -25,5 +25,3 @@ class LargeTableExample extends React.Component {
         );
     }
 }
-
-module.exports = LargeTableExample;

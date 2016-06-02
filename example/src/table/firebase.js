@@ -1,12 +1,17 @@
 'use strict';
 
-var React = require('react-native');
-var TableView = require('react-native-rich-tableview');
-var Section = TableView.Section;
-var Item = TableView.Item;
-import Firebase from 'firebase';
+import React, { Component } from 'react';
+import ReactNative, {
+    Text,
+    View
+} from 'react-native'
+import TableView from 'react-native-rich-tableview';
+let Section = TableView.Section;
+let Item = TableView.Item;
 
-class FirebaseExample extends React.Component {
+import Firebase from 'firebase';
+console.log(Firebase);
+export default class FirebaseExample extends Component {
     constructor(props) {
         super(props);
         this.state = {data:null};
@@ -58,5 +63,3 @@ class FirebaseExample extends React.Component {
         );
     }
 }
-
-module.exports = FirebaseExample;

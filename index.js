@@ -1,7 +1,10 @@
 'use strict';
-var React = require('react-native');
 
-var {
+import React, {
+  PropTypes
+} from 'react';
+
+import ReactNative, {
   NativeMethodsMixin,
   ReactNativeViewAttributes,
   NativeModules,
@@ -10,10 +13,11 @@ var {
   View,
   requireNativeComponent,
   ScrollView,
-  PropTypes
-} = React;
+  EdgeInsetsPropType,
+  PointPropType
+} from 'react-native';
 
-var invariant = require('invariant');
+import invariant from 'invariant';
 
 import TableViewScrollResponder from './src/TableViewScrollResponder.js'
 
@@ -25,6 +29,7 @@ function extend(el, map) {
             el[i] = map[i];
     return el;
 }
+
 var TableView = React.createClass({
     mixins: [NativeMethodsMixin, TableViewScrollResponder.Mixin],
 
@@ -128,13 +133,13 @@ var TableView = React.createClass({
          * of the scroll view. Defaults to `{0, 0, 0, 0}`.
          * @platform ios
          */
-        contentInset: React.EdgeInsetsPropType,
+        contentInset: EdgeInsetsPropType,
         /**
          * Used to manually set the starting scroll offset.
          * The default value is `{x: 0, y: 0}`.
          * @platform ios
          */
-        contentOffset: React.PointPropType,
+        contentOffset: PointPropType,
         /**
          * When true, the scroll view bounces when it reaches the end of the
          * content if the content is larger then the scroll view along the axis of
@@ -273,7 +278,7 @@ var TableView = React.createClass({
          * the `contentInset`. Defaults to `{0, 0, 0, 0}`.
          * @platform ios
          */
-        scrollIndicatorInsets: React.EdgeInsetsPropType,
+        scrollIndicatorInsets: EdgeInsetsPropType,
         /**
          * When true, the scroll view scrolls to top when the status bar is tapped.
          * The default value is true.

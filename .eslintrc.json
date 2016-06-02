@@ -27,6 +27,19 @@
         "quotes": [
             "warn",
             "single"
+        ],
+        "no-unused-vars": [
+          "warn",
+          {
+            "vars": "all",
+            "args": "after-used"
+          }
+        ],
+        "no-unused-expressions": [
+          "warn"
+        ],
+        "no-unused-labels": [
+          "warn"
         ]
     }
 }

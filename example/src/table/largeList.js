@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import ReactNative, { Text, ListView } from 'react-native';
 
-class ListViewExample extends Component {
+export default class ListViewExample extends Component {
     constructor(props){
         super(props);
         this.numAdditionaItems = 1000;
@@ -25,5 +25,3 @@ class ListViewExample extends Component {
         );
     }
 }
-
-module.exports = ListViewExample;
