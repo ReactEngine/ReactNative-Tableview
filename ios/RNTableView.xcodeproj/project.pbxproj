@@ -18,6 +18,7 @@
 		8799E1E01BF1152400AF9A67 /* RNTableFooterViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1DF1BF1152400AF9A67 /* RNTableFooterViewManager.m */; };
 		8799E1E31BF117F600AF9A67 /* RNTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1E21BF117F600AF9A67 /* RNTableHeaderView.m */; };
 		8799E1E61BF1181400AF9A67 /* RNTableHeaderViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */; };
+		9DB2E3511CFFCB2500FB3210 /* RNScrollEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DB2E3501CFFCB2500FB3210 /* RNScrollEvent.m */; };
 		9DB5DF541CC0F6EC002293EF /* RCTConvert+UITableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,8 @@
 		8799E1E21BF117F600AF9A67 /* RNTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNTableHeaderView.m; sourceTree = "<group>"; };
 		8799E1E41BF1181400AF9A67 /* RNTableHeaderViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNTableHeaderViewManager.h; sourceTree = "<group>"; };
 		8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNTableHeaderViewManager.m; sourceTree = "<group>"; };
+		9DB2E34F1CFFCB2500FB3210 /* RNScrollEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNScrollEvent.h; sourceTree = "<group>"; };
+		9DB2E3501CFFCB2500FB3210 /* RNScrollEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNScrollEvent.m; sourceTree = "<group>"; };
 		9DB5DF521CC0F6EC002293EF /* RCTConvert+UITableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+UITableView.h"; sourceTree = "<group>"; };
 		9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+UITableView.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -99,6 +102,8 @@
 				8799E1E51BF1181400AF9A67 /* RNTableHeaderViewManager.m */,
 				9DB5DF521CC0F6EC002293EF /* RCTConvert+UITableView.h */,
 				9DB5DF531CC0F6EC002293EF /* RCTConvert+UITableView.m */,
+				9DB2E34F1CFFCB2500FB3210 /* RNScrollEvent.h */,
+				9DB2E3501CFFCB2500FB3210 /* RNScrollEvent.m */,
 			);
 			path = RNTableView;
 			sourceTree = "<group>";
@@ -194,6 +199,7 @@
 				8799E1E61BF1181400AF9A67 /* RNTableHeaderViewManager.m in Sources */,
 				872545E61BAAC85D00889249 /* RNTableViewManager.m in Sources */,
 				872545E11BAAC85D00889249 /* JSONDataSource.m in Sources */,
+				9DB2E3511CFFCB2500FB3210 /* RNScrollEvent.m in Sources */,
 				872545E41BAAC85D00889249 /* RNTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

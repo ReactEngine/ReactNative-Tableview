@@ -21,19 +21,7 @@
 #import "RNTableFooterView.h"
 #import "RNTableHeaderView.h"
 #import "RNReactModuleCell.h"
-
-@interface RCTEventDispatcher (RCTScrollView)
-
-/**
- * Send a scroll event.
- * (You can send a fake scroll event by passing nil for scrollView).
- */
-- (void)sendScrollEventWithType:(RCTScrollEventType)type
-                       reactTag:(NSNumber *)reactTag
-                     scrollView:(UIScrollView *)scrollView
-                       userData:(NSDictionary *)userData;
-
-@end
+#import "RNScrollEvent.h"
 
 #pragma mark -
 #pragma mark RNTableView
@@ -59,6 +47,9 @@
     NSMutableArray<NSValue *> *_cachedChildFrames;
     BOOL _allowNextScrollNoMatterWhat;
     CGRect _lastClippedToRect;
+    
+    uint16_t _coalescingKey;
+    NSString *_lastEmittedEventName;
 }
 
 #pragma mark -
@@ -621,14 +612,26 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
 }
 
 #pragma mark -
-#pragma mark UIScrollViewDelegate
+#pragma mark Scroll Events
 
-#define RCT_SCROLL_EVENT_HANDLER(delegateMethod, eventName) \
-- (void)delegateMethod:(UIScrollView *)scrollView { \
-    [_eventDispatcher sendScrollEventWithType:eventName reactTag:self.reactTag scrollView:scrollView userData:nil]; \
-    if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
-        [_nativeScrollDelegate delegateMethod:scrollView]; \
-    } \
+- (void)sendScrollEventWithName:(NSString *)eventName
+                       userData:(NSDictionary *)userData
+{
+    if (![_lastEmittedEventName isEqualToString:eventName]) {
+        _coalescingKey++;
+        _lastEmittedEventName = [eventName copy];
+    }
+    RNScrollEvent *scrollEvent = [[RNScrollEvent alloc] initWithEventName:eventName
+                                                                 reactTag:self.reactTag
+                                                               scrollView:_tableView
+                                                                 userData:userData
+                                                            coalescingKey:_coalescingKey];
+    [_eventDispatcher sendEvent:scrollEvent];
+}
+
+#define RCT_SEND_SCROLL_EVENT(_eventName, _userData) { \
+    NSString *eventName = NSStringFromSelector(@selector(_eventName)); \
+    [self sendScrollEventWithName:eventName userData:_userData]; \
 }
 
 #define RCT_FORWARD_SCROLL_EVENT(call) \
@@ -636,10 +639,20 @@ if ([_nativeScrollDelegate respondsToSelector:_cmd]) { \
     [_nativeScrollDelegate call]; \
 }
 
-RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndScrollingAnimation, RCTScrollEventTypeEndDeceleration)
-RCT_SCROLL_EVENT_HANDLER(scrollViewWillBeginDecelerating, RCTScrollEventTypeStartDeceleration)
-RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndDecelerating, RCTScrollEventTypeEndDeceleration)
-RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
+#define RCT_SCROLL_EVENT_HANDLER(delegateMethod, eventName) \
+- (void)delegateMethod:(UIScrollView *)scrollView           \
+{                                                           \
+    RCT_SEND_SCROLL_EVENT(eventName, nil);                    \
+    RCT_FORWARD_SCROLL_EVENT(delegateMethod:scrollView);      \
+}
+
+RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndScrollingAnimation, onMomentumScrollEnd) //TODO: shouldn't this be onScrollAnimationEnd?
+RCT_SCROLL_EVENT_HANDLER(scrollViewWillBeginDecelerating, onMomentumScrollBegin)
+RCT_SCROLL_EVENT_HANDLER(scrollViewDidEndDecelerating, onMomentumScrollEnd)
+RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, onScroll)
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     //    [_tableView dockClosestSectionHeader];
@@ -657,10 +670,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
         (_scrollEventThrottle > 0 && _scrollEventThrottle < (now - _lastScrollDispatchTime))) {
         
         // Dispatch event
-        [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeMove
-                                         reactTag:self.reactTag
-                                       scrollView:scrollView
-                                         userData:nil];
+        RCT_SEND_SCROLL_EVENT(onScroll, nil);
         
         // Update dispatch time
         _lastScrollDispatchTime = now;
@@ -671,7 +681,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _allowNextScrollNoMatterWhat = YES; // Ensure next scroll event is recorded, regardless of throttle
-    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeStart reactTag:self.reactTag scrollView:scrollView userData:nil];
+    RCT_SEND_SCROLL_EVENT(onScrollBeginDrag, nil);
     RCT_FORWARD_SCROLL_EVENT(scrollViewWillBeginDragging:scrollView);
 }
 
@@ -687,8 +697,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
                                        @"y": @(targetContentOffset->y)
                                        }
                                };
-    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeEnd reactTag:self.reactTag scrollView:scrollView userData:userData];
-    
+    RCT_SEND_SCROLL_EVENT(onScrollEndDrag, userData);
     RCT_FORWARD_SCROLL_EVENT(scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset);
 }
 
@@ -698,13 +707,13 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, RCTScrollEventTypeMove)
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view
 {
-    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeStart reactTag:self.reactTag scrollView:scrollView userData:nil];
+    RCT_SEND_SCROLL_EVENT(onScrollBeginDrag, nil);
     RCT_FORWARD_SCROLL_EVENT(scrollViewWillBeginZooming:scrollView withView:view);
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale
 {
-    [_eventDispatcher sendScrollEventWithType:RCTScrollEventTypeEnd reactTag:self.reactTag scrollView:scrollView userData:nil];
+    RCT_SEND_SCROLL_EVENT(onScrollEndDrag, nil);
     RCT_FORWARD_SCROLL_EVENT(scrollViewDidEndZooming:scrollView withView:view atScale:scale);
 }
 
