@@ -3,12 +3,6 @@
 
 //Use react-native root views as reusable cells returned from cellForRowAtIndexPath.
 
-//App must use the code below to store the app bridge, else cells will be blank
-//AppDelegate.m, didFinishLaunchingWithOptions:
-// #import <RNTableView/RNAppGlobals.h>
-//RCTRootView *rootView = ...
-//[[RNAppGlobals sharedInstance] setAppBridge:rootView.bridge];
-
 @interface RNReactModuleCell : UITableViewCell {
 }
 

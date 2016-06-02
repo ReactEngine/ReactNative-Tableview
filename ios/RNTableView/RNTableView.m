@@ -371,9 +371,6 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
 }
 
 - (UITableViewCell *)setupReactModuleCell:(UITableView *)tableView data:(NSDictionary *)data indexPath:(NSIndexPath *)indexPath {
-    RCTAssert(_bridge, @"Must set global bridge in AppDelegate, e.g. \n\
-              #import <RNTableView/RNAppGlobals.h>\n\
-              [[RNAppGlobals sharedInstance] setAppBridge:rootView.bridge]");
     RNReactModuleCell *cell = [tableView dequeueReusableCellWithIdentifier:_reactModuleCellReuseIndentifier];
     if (cell == nil) {
         cell = [[RNReactModuleCell alloc] initWithStyle:self.tableViewCellStyle reuseIdentifier:_reactModuleCellReuseIndentifier bridge: _bridge data:data indexPath:indexPath reactModule:_reactModuleForCell tableViewTag:self.reactTag];
