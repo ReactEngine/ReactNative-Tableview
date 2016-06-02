@@ -1,5 +1,5 @@
 //
-//  RCTTableViewManager.h
+//  RCTPlainTableViewManager.h
 //  RCTTableView
 //
 //  Created by Pavlo Aksonov on 18.08.15.
@@ -8,6 +8,6 @@
 
 #import "RCTViewManager.h"
 
-@interface RNTableViewManager : RCTViewManager
+@interface RNPlainTableViewManager : RCTViewManager
 
 @end

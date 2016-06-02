@@ -1,12 +1,12 @@
 //
-//  RCTTableViewManager.m
+//  RCTPlainTableViewManager.m
 //  RCTTableView
 //
 //  Created by Pavlo Aksonov on 18.08.15.
 //  Copyright (c) 2015 Pavlo Aksonov. All rights reserved.
 //
 
-#import "RNTableViewManager.h"
+#import "RNPlainTableViewManager.h"
 #import "RNTableView.h"
 #import "RCTBridge.h"
 #import "RCTConvert.h"
@@ -20,12 +20,11 @@
 
 @end
 
-@implementation RNTableViewManager
+@implementation RNPlainTableViewManager
 
 RCT_EXPORT_MODULE()
-- (UIView *)view
-{
-    return [[RNTableView alloc] initWithBridge:self.bridge];
+- (UIView *)view {
+    return [[RNTableView alloc] initWithBridge:self.bridge style:UITableViewStylePlain];
 }
 
 #pragma mark -
@@ -121,9 +120,7 @@ RCT_CUSTOM_VIEW_PROPERTY(footerFontFamily, NSString, RNTableView) {
 
 RCT_EXPORT_VIEW_PROPERTY(tableViewCellStyle, UITableViewCellStyle)
 /*Each cell is a separate app, multiple cells share the app/module name*/
-RCT_CUSTOM_VIEW_PROPERTY(reactModuleForCell, NSString*, RNTableView) {
-    [view setReactModuleForCell:[RCTConvert NSString:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(reactModuleForCell, NSString)
 
 RCT_EXPORT_VIEW_PROPERTY(cellForRowAtIndexPath, NSArray)
 
@@ -190,26 +187,13 @@ RCT_EXPORT_VIEW_PROPERTY(zoomScale, CGFloat)
 RCT_CUSTOM_VIEW_PROPERTY(contentInset, UIEdgeInsets, RNTableView) {
     [view setContentInset:[RCTConvert UIEdgeInsets:json]];
 }
-RCT_CUSTOM_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets, RNTableView) {
-    [view setScrollIndicatorInsets:[RCTConvert UIEdgeInsets:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets)
 RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
 RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
 
-RCT_CUSTOM_VIEW_PROPERTY(contentOffset, CGPoint, RNTableView) {
-    [view setContentOffset:[RCTConvert CGPoint:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(contentOffset, CGPoint)
 
-// Use ScrollView.Constants.DecelerationRate
-//- (NSDictionary<NSString *, id> *)constantsToExport
-//{
-//    return @{
-//             @"DecelerationRate": @{
-//                     @"normal": @(UIScrollViewDecelerationRateNormal),
-//                     @"fast": @(UIScrollViewDecelerationRateFast),
-//                     },
-//             };
-//}
+
 
 RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
                   callback:(RCTResponseSenderBlock)callback)
@@ -224,10 +208,9 @@ RCT_EXPORT_METHOD(getContentSize:(nonnull NSNumber *)reactTag
          }
          
          CGSize size = view.tableView.contentSize;
-         callback(@[@{
-                        @"width" : @(size.width),
-                        @"height" : @(size.height)
-                        }]);
+         callback(@[@{@"width" : @(size.width),
+                      @"height" : @(size.height)}
+                    ]);
      }];
 }
 

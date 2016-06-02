@@ -26,6 +26,7 @@
 		9D34E15C1CEF119200D23025 /* states.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D34E15B1CEF119200D23025 /* states.json */; };
 		9D34E15E1CEF119C00D23025 /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = 9D34E15D1CEF119C00D23025 /* countries.json */; };
 		9DA460521CAC015C0002BE8A /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DA460511CAC015C0002BE8A /* libz.tbd */; };
+		9DB2E3531D0026F300FB3210 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DB2E3521D0026F300FB3210 /* libc++.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,6 +132,7 @@
 		9D34E15B1CEF119200D23025 /* states.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = states.json; path = ../../states.json; sourceTree = "<group>"; };
 		9D34E15D1CEF119C00D23025 /* countries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = countries.json; path = ../../countries.json; sourceTree = "<group>"; };
 		9DA460511CAC015C0002BE8A /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		9DB2E3521D0026F300FB3210 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DB2E3531D0026F300FB3210 /* libc++.tbd in Frameworks */,
 				9D34E13A1CEEFCEC00D23025 /* libRCTActionSheet.a in Frameworks */,
 				9D34E13B1CEEFCEC00D23025 /* libRCTGeolocation.a in Frameworks */,
 				9D34E13C1CEEFCEC00D23025 /* libRCTImage.a in Frameworks */,
@@ -301,6 +304,7 @@
 		9DB31DA91CC095C1009CD1C4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9DB2E3521D0026F300FB3210 /* libc++.tbd */,
 				9DA460511CAC015C0002BE8A /* libz.tbd */,
 			);
 			name = Frameworks;

@@ -41,6 +41,7 @@ var TableView = React.createClass({
     getDefaultProps() {
         return {
             tableViewCellEditingStyle: "delete",
+            tableViewStyle: 'plain'
         };
     },
 
@@ -178,16 +179,21 @@ var TableView = React.createClass({
         onEndDisplayingCell: this._onEndDisplayingCell,
       };
 
-      var { decelerationRate } = this.props;
+      let { decelerationRate } = this.props;
       if (decelerationRate) {
         props.decelerationRate = processDecelerationRate(decelerationRate);
       }
 
-      var TableViewClass;
+      let TableViewClass;
+      console.log(this.props.tableViewStyle + '  ' + props.tableViewStyle);
       if (Platform.OS === 'ios') {
-        TableViewClass = RNTableView;
+          if (props.tableViewStyle === 'plain') {
+              TableViewClass = RNPlainTableView;
+          } else if (props.tableViewStyle === 'grouped') {
+              TableViewClass = RNGroupedTableView;
+          }
       } else if (Platform.OS === 'android') {
-        if (this.props.horizontal) {
+        if (props.horizontal) {
           TableViewClass = undefined;
         } else {
           TableViewClass = undefined;
@@ -198,7 +204,9 @@ var TableView = React.createClass({
         'TableViewClass must not be undefined'
       );
 
-      var refreshControl = this.props.refreshControl;
+      // do not set the tableViewStyle on native component
+      delete props.tableViewStyle;
+      let refreshControl = this.props.refreshControl;
       if (refreshControl) {
         if (Platform.OS === 'ios') {
           // On iOS the RefreshControl is a child of the TableView.
@@ -457,10 +465,16 @@ var styles = StyleSheet.create({
     },
 });
 
-var RNTableView = requireNativeComponent('RNTableView', TableView, {
-  nativeOnly: {
+var RNPlainTableView = requireNativeComponent('RNPlainTableView', null, {
+    nativeOnly: {
 
-  }
+    }
 });
+
+var RNGroupedTableView = requireNativeComponent('RNGroupedTableView', null, {
+    nativeOnly: {
+
+    }
+})
 
 module.exports = TableView;

@@ -55,7 +55,7 @@
 #pragma mark -
 #pragma mark Constructors
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge {
+- (instancetype)initWithBridge:(RCTBridge *)bridge style:(UITableViewStyle)style {
     RCTAssertParam(bridge);
     
     if ((self = [super initWithFrame:CGRectZero])) {
@@ -69,34 +69,24 @@
         _cells = [NSMutableArray array];
         _autoFocus = YES;
         _allowsToggle = NO;
-        _allowsMultipleSelection = NO;
+        
+        [self createTableViewWithStyle:style];
     }
     return self;
 }
 
-- (void)createTableView {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:_tableViewStyle];
+- (void)createTableViewWithStyle:(UITableViewStyle)style {
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:style];
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _tableView.allowsMultipleSelectionDuringEditing = NO;
     _tableView.contentInset = self.contentInset;
-    _tableView.contentOffset = self.contentOffset;
-    _tableView.scrollIndicatorInsets = self.scrollIndicatorInsets;
     _tableView.backgroundColor = [UIColor clearColor];
-    UIView *view = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0.001, 0.001)];
-    _tableView.tableHeaderView = view;
-    _tableView.tableFooterView = view;
-    _tableView.separatorStyle = self.separatorStyle;
+    
     _reactModuleCellReuseIndentifier = @"ReactModuleCell";
     [_tableView registerClass:[RNReactModuleCell class] forCellReuseIdentifier:_reactModuleCellReuseIndentifier];
-    [self addSubview:_tableView];
-}
-
-- (void)setTableViewStyle:(UITableViewStyle)tableViewStyle {
-    _tableViewStyle = tableViewStyle;
     
-    [self createTableView];
+    [self addSubview:_tableView];
 }
 
 - (void)dealloc {
@@ -105,18 +95,6 @@
 
 RCT_NOT_IMPLEMENTED(-initWithFrame:(CGRect)frame)
 RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
-
-#pragma mark -
-
-- (void)setSeparatorColor:(UIColor *)separatorColor {
-    _separatorColor = separatorColor;
-    [self.tableView setSeparatorColor:separatorColor];
-}
-
-- (void)setContentOffset:(CGPoint)offset {
-    _contentOffset = offset;
-    _tableView.contentOffset = offset;
-}
 
 #pragma mark -
 #pragma mark React View Hierarchy
@@ -282,10 +260,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
     if (_sections[section][@"headerHeight"]){
         return [_sections[section][@"headerHeight"] floatValue] ? [_sections[section][@"headerHeight"] floatValue] : 0.000001;
     } else {
-        if (self.headerHeight){
-            return self.headerHeight;
-        }
-        return -1;
+        return self.tableView.sectionHeaderHeight;
     }
 }
 
@@ -312,10 +287,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
         return [_sections[section][@"footerHeight"] floatValue] ? [_sections[section][@"footerHeight"] floatValue] : 0.000001;
         
     } else {
-        if (self.footerHeight){
-            return self.footerHeight;
-        }
-        return -1;
+        return self.tableView.sectionFooterHeight;
     }
 }
 
@@ -495,7 +467,7 @@ RCT_NOT_IMPLEMENTED(-initWithCoder:(NSCoder *)aDecoder)
         if (_allowsToggle && newValue[@"selected"] && [newValue[@"selected"] intValue]) {
             [newValue removeObjectForKey:@"selected"];
         } else {
-            if (!_allowsMultipleSelection) {
+            if (!tableView.allowsMultipleSelection) {
                 [oldValue removeObjectForKey:@"selected"];
             }
             [newValue setObject:@1 forKey:@"selected"];
@@ -725,56 +697,6 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, onScroll)
 #pragma mark -
 #pragma mark ScrollView APIs
 
-- (CGSize)_calculateViewportSize {
-    CGSize viewportSize = self.bounds.size;
-    if (_automaticallyAdjustContentInsets) {
-        UIEdgeInsets contentInsets = [RCTView contentInsetsForView:self];
-        viewportSize = CGSizeMake(self.bounds.size.width - contentInsets.left - contentInsets.right,
-                                  self.bounds.size.height - contentInsets.top - contentInsets.bottom);
-    }
-    return viewportSize;
-}
-
-- (CGPoint)calculateOffsetForContentSize:(CGSize)newContentSize
-{
-    CGPoint oldOffset = _tableView.contentOffset;
-    CGPoint newOffset = oldOffset;
-    
-    CGSize oldContentSize = _tableView.contentSize;
-    CGSize viewportSize = [self _calculateViewportSize];
-    
-    BOOL fitsinViewportY = oldContentSize.height <= viewportSize.height && newContentSize.height <= viewportSize.height;
-    if (newContentSize.height < oldContentSize.height && !fitsinViewportY) {
-        CGFloat offsetHeight = oldOffset.y + viewportSize.height;
-        if (oldOffset.y < 0) {
-            // overscrolled on top, leave offset alone
-        } else if (offsetHeight > oldContentSize.height) {
-            // overscrolled on the bottom, preserve overscroll amount
-            newOffset.y = MAX(0, oldOffset.y - (oldContentSize.height - newContentSize.height));
-        } else if (offsetHeight > newContentSize.height) {
-            // offset falls outside of bounds, scroll back to end of list
-            newOffset.y = MAX(0, newContentSize.height - viewportSize.height);
-        }
-    }
-    
-    BOOL fitsinViewportX = oldContentSize.width <= viewportSize.width && newContentSize.width <= viewportSize.width;
-    if (newContentSize.width < oldContentSize.width && !fitsinViewportX) {
-        CGFloat offsetHeight = oldOffset.x + viewportSize.width;
-        if (oldOffset.x < 0) {
-            // overscrolled at the beginning, leave offset alone
-        } else if (offsetHeight > oldContentSize.width && newContentSize.width > viewportSize.width) {
-            // overscrolled at the end, preserve overscroll amount as much as possible
-            newOffset.x = MAX(0, oldOffset.x - (oldContentSize.width - newContentSize.width));
-        } else if (offsetHeight > newContentSize.width) {
-            // offset falls outside of bounds, scroll back to end
-            newOffset.x = MAX(0, newContentSize.width - viewportSize.width);
-        }
-    }
-    
-    // all other cases, offset doesn't change
-    return newOffset;
-}
-
 /**
  * Once you set the `contentSize`, to a nonzero value, it is assumed to be
  * managed by you, and we'll never automatically compute the size for you,
@@ -782,19 +704,6 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, onScroll)
  */
 - (CGSize)contentSize {
     return _tableView.contentSize;
-}
-
-- (void)reactBridgeDidFinishTransaction {
-    CGSize contentSize = self.contentSize;
-    if (!CGSizeEqualToSize(_tableView.contentSize, contentSize)) {
-        // When contentSize is set manually, ScrollView internals will reset
-        // contentOffset to  {0, 0}. Since we potentially set contentSize whenever
-        // anything in the ScrollView updates, we workaround this issue by manually
-        // adjusting contentOffset whenever this happens
-        CGPoint newOffset = [self calculateOffsetForContentSize:contentSize];
-        _tableView.contentSize = contentSize;
-        self.contentOffset = newOffset;
-    }
 }
 
 // Note: setting several properties of UIScrollView has the effect of
@@ -809,6 +718,12 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidZoom, onScroll)
     [_tableView setter:value];                        \
     _tableView.contentOffset = contentOffset;         \
 }
+
+RCT_SET_AND_PRESERVE_OFFSET(setSectionHeaderHeight, CGFloat)
+RCT_SET_AND_PRESERVE_OFFSET(setSectionFooterHeight, CGFloat)
+RCT_SET_AND_PRESERVE_OFFSET(setSeparatorStyle, UITableViewCellSeparatorStyle)
+RCT_SET_AND_PRESERVE_OFFSET(setSeparatorColor, UIColor*)
+RCT_SET_AND_PRESERVE_OFFSET(setAllowsMultipleSelection, BOOL)
 
 RCT_SET_AND_PRESERVE_OFFSET(setAlwaysBounceHorizontal, BOOL)
 RCT_SET_AND_PRESERVE_OFFSET(setAlwaysBounceVertical, BOOL)
@@ -834,12 +749,19 @@ RCT_SET_AND_PRESERVE_OFFSET(setScrollIndicatorInsets, UIEdgeInsets);
     return [super respondsToSelector:aSelector] || [_tableView respondsToSelector:aSelector];
 }
 
-- (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-    [_tableView setValue:value forKey:key];
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];
+    if (!signature && [_tableView respondsToSelector:aSelector]) {
+        signature = [_tableView methodSignatureForSelector:aSelector];
+    }
+    return signature;
 }
 
-- (id)valueForUndefinedKey:(NSString *)key {
-    return [_tableView valueForKey:key];
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    if ([_tableView respondsToSelector:aSelector]) {
+        return _tableView;
+    }
+    return self;
 }
 
 @end
