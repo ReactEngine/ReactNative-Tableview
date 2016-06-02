@@ -25,10 +25,6 @@
             "warn",
             "unix"
         ],
-        "quotes": [
-            "warn",
-            "single"
-        ],
         "no-unused-vars": [
             "warn",
             {

@@ -21,7 +21,7 @@ export default class CustomCellsExample extends Component {
     }
 
     componentDidMount(){
-        setTimeout(()=> this.setState({
+        this.timeout = setTimeout(()=> this.setState({
             sectionLabel: 'Section #1',
             cellLabel: 'Cell #1',
             cells:[
@@ -33,6 +33,10 @@ export default class CustomCellsExample extends Component {
                 </Cell>
             ]
         }), 3000);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout)
     }
 
     render() {
