@@ -41,8 +41,10 @@ var TableView = React.createClass({
 
     getDefaultProps() {
         return {
-            tableViewCellEditingStyle: "delete",
-            tableViewStyle: 'plain'
+            tableViewStyle: 'plain',
+            tableViewCellStyle: 'subtitle',
+            separatorStyle: 'singleLine',
+            tableViewCellEditingStyle: "delete"
         };
     },
 
@@ -320,11 +322,6 @@ var TableView = React.createClass({
 
             sections: this.state.sections,
             additionalItems: this.state.additionalItems,
-            tableViewStyle: 'plain',
-            tableViewCellStyle: 'subtitle',
-            tableViewCellEditingStyle: this.props.tableViewCellEditingStyle,
-            separatorStyle: 'singleLine',
-            scrollIndicatorInsets: this.props.contentInset,
             json: this.state.json,
             onPress: this._onPress,
             onChange: this._onChange,
