@@ -21,6 +21,7 @@ import invariant from 'invariant';
 
 import TableViewScrollResponder from './src/TableViewScrollResponder'
 import TableViewPropTypes from './src/TableViewPropTypes';
+import processDecelerationRate from './src/processDecelerationRate';
 
 var TABLEVIEW = 'tableview';
 
