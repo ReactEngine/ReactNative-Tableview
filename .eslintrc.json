@@ -1,45 +1,45 @@
 {
-    "env": {
-        "browser": false,
-        "node": true,
-        "commonjs": true,
-        "es6": true
+  "env": {
+    "browser": false,
+    "node": true,
+    "commonjs": true,
+    "es6": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
     },
-    "extends": "eslint:recommended",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true,
-            "jsx": true
-        },
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react",
-        "react-native"
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "react-native"
+  ],
+  "rules": {
+    "indent": [
+      "warn",
+      2
     ],
-    "rules": {
-        "indent": [
-            "warn",
-            2
-        ],
-        "linebreak-style": [
-            "warn",
-            "unix"
-        ],
-        "no-unused-vars": [
-            "warn",
-            {
-                "vars": "all",
-                "args": "after-used"
-            }
-        ],
-        "no-unused-expressions": [
-            "warn"
-        ],
-        "no-unused-labels": [
-            "warn"
-        ],
-        "react-native/no-unused-styles": 2,
-        "react-native/split-platform-components": 2
-    }
+    "linebreak-style": [
+      "warn",
+      "unix"
+    ],
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "after-used"
+      }
+    ],
+    "no-unused-expressions": [
+      "warn"
+    ],
+    "no-unused-labels": [
+      "warn"
+    ],
+    "react-native/no-unused-styles": 2,
+    "react-native/split-platform-components": 2
+  }
 }
