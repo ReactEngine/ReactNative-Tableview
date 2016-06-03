@@ -29,10 +29,15 @@ export default class Launch extends React.Component {
     }
 
     render(){
+
         return (
-            <TableView style={{flex:1}}
+            <TableView ref={'TABLEVIEW'}
+                       style={{flex:1}}
                        contentInset={{top:64,left:0,bottom:0,right:0}}
-                       scrollEventThrottle={0.05}>
+                       scrollEventThrottle={0.05}
+                       refreshControl={<RefreshControl onRefresh={()=>setTimeout(()=>{
+                           this.refs['TABLEVIEW'].endRefreshing();
+                       }, 10)} />}>
 
                 <Header style={{height:30, backgroundColor:'#ff0000'}} />
                 <Section label={this.state.sectionLabel}  arrow={true}>

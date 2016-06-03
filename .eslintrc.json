@@ -19,7 +19,8 @@
     ],
     "rules": {
         "indent": [
-            "warn"
+            "warn",
+            2
         ],
         "linebreak-style": [
             "warn",

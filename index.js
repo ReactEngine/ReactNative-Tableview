@@ -23,6 +23,8 @@ import TableViewScrollResponder from './src/TableViewScrollResponder'
 import TableViewPropTypes from './src/TableViewPropTypes';
 import processDecelerationRate from './src/processDecelerationRate';
 
+let {RNPlainTableViewManager, RNGroupedTableViewManager} = NativeModules;
+
 var TABLEVIEW = 'tableview';
 
 function extend(el, map) {
@@ -187,9 +189,15 @@ var TableView = React.createClass({
     },
 
     endRefreshing: function() {
-        RCTTableViewManager.endRefreshing(
-            React.findNodeHandle(this)
-        );
+        if (this.props.tableViewStyle === 'plain') {
+            RNPlainTableViewManager.endRefreshing(
+                ReactNative.findNodeHandle(this)
+            );
+        } else if (this.props.tableViewStyle === 'grouped') {
+            RNGroupedTableViewManager.endRefreshing(
+                ReactNative.findNodeHandle(this)
+            );
+        }
     },
 
     /**
@@ -203,11 +211,11 @@ var TableView = React.createClass({
     },
 
     getScrollableNode: function(): any {
-        return React.findNodeHandle(this.refs[TABLEVIEW]);
+        return ReactNative.findNodeHandle(this.refs[TABLEVIEW]);
     },
 
     getInnerViewNode: function(): any {
-        return React.findNodeHandle(this.refs[INNERVIEW]);
+        return ReactNative.findNodeHandle(this.refs[INNERVIEW]);
     },
 
     /**
@@ -335,7 +343,6 @@ var TableView = React.createClass({
         }
 
         let TableViewClass;
-        console.log(this.props.tableViewStyle + '  ' + props.tableViewStyle);
         if (Platform.OS === 'ios') {
             if (props.tableViewStyle === 'plain') {
                 TableViewClass = RNPlainTableView;
@@ -356,13 +363,14 @@ var TableView = React.createClass({
 
         // do not set the tableViewStyle on native component
         delete props.tableViewStyle;
+
         let refreshControl = this.props.refreshControl;
         if (refreshControl) {
             if (Platform.OS === 'ios') {
                 // On iOS the RefreshControl is a child of the TableView.
                 return (
                     <TableViewClass {...props} ref={TABLEVIEW}>
-                        <Header>{refreshControl}</Header>
+                        {refreshControl}
                         {this.state.children}
                     </TableViewClass>
                 );
@@ -390,8 +398,7 @@ var TableView = React.createClass({
 });
 
 
-
-TableView.Header = React.createClass({
+var Header = React.createClass({
     getInitialState(){
         return {width:0, height:0}
     },
@@ -405,6 +412,8 @@ TableView.Header = React.createClass({
             />
     },
 });
+
+TableView.Header = Header;
 var RNHeaderView = requireNativeComponent('RNTableHeaderView', null);
 
 TableView.Footer = React.createClass({
@@ -442,13 +451,13 @@ TableView.Cell = React.createClass({
         return {width:0, height:0}
     },
     render: function() {
-        return <RNCellView onLayout={(event) => {
-                this.setState(event.nativeEvent.layout)
-            }}
-            {...this.props}
-            componentWidth={this.state.width}
-            componentHeight={this.state.height}
-            />
+        return (
+            <RNCellView onLayout={event => this.setState(event.nativeEvent.layout)}
+                {...this.props}
+                componentWidth={this.state.width}
+                componentHeight={this.state.height}
+                />
+        )
     },
 });
 var RNCellView = requireNativeComponent('RNCellView', null);

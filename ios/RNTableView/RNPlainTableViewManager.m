@@ -184,9 +184,7 @@ RCT_EXPORT_VIEW_PROPERTY(showsVerticalScrollIndicator, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollEventThrottle, NSTimeInterval)
 RCT_EXPORT_VIEW_PROPERTY(zoomScale, CGFloat)
 
-RCT_CUSTOM_VIEW_PROPERTY(contentInset, UIEdgeInsets, RNTableView) {
-    [view setContentInset:[RCTConvert UIEdgeInsets:json]];
-}
+RCT_EXPORT_VIEW_PROPERTY(contentInset, UIEdgeInsets)
 RCT_EXPORT_VIEW_PROPERTY(scrollIndicatorInsets, UIEdgeInsets)
 RCT_EXPORT_VIEW_PROPERTY(snapToInterval, int)
 RCT_EXPORT_VIEW_PROPERTY(snapToAlignment, NSString)
